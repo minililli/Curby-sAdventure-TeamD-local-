@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using TreeEditor;
 using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
@@ -9,6 +10,9 @@ using UnityEngine.InputSystem;
 public class Player : MonoBehaviour
 {
     public float MoveSpeed = 0.1f;
+    public float JumpPower = 10.0f;
+    public float jumpCount;
+    SpriteRenderer spriteRenderer;
 
     PlayerInputAction inputActions;
 
@@ -17,6 +21,11 @@ public class Player : MonoBehaviour
     public Vector2 inputVec;
 
     Rigidbody2D rigid;
+
+    public GameObject skills;               // 스킬1 등록
+
+    float h;                                //키 입력 방향 우측:1, 좌측 :-1
+
     //---------------------------------------------------------------------------------------------------
     byte level;
 
@@ -67,6 +76,7 @@ public class Player : MonoBehaviour
     private void Awake()
     {
         inputActions = new PlayerInputAction();
+        spriteRenderer = GetComponent<SpriteRenderer>();
         rigid = GetComponent<Rigidbody2D>();
     }
     private void OnEnable()
@@ -97,13 +107,25 @@ public class Player : MonoBehaviour
     }
 
     private void OnAttack(InputAction.CallbackContext context)   // 키보드 A키
-    {
-        Debug.Log("Attack");
+    {              
+        //Debug.Log("Attack");
     }
 
     private void OnSkills(InputAction.CallbackContext context)  // 키보드 S키
     {
-        Debug.Log("SkillS");
+        GameObject obj = Instantiate(skills);                   //skills 생성
+        float x = this.transform.position.x;
+        float y = this.transform.position.y;
+        obj.transform.position = new Vector3(x, y, 0);          //skills 생성위치
+        if (h >= 0)
+        {
+            skills.transform.localScale = new Vector3(1,1,0);       //우 누르면 우측에 생성             
+        }
+        else if(h < 0)
+        {
+            skills.transform.localScale = new Vector3(-1, 1, 0);    //좌 누르면 좌측에 생성 
+        }
+            //Debug.Log("SkillS");
     }
     private void OnSkilld(InputAction.CallbackContext context)  // 키보드 D키
     {
@@ -112,24 +134,53 @@ public class Player : MonoBehaviour
    
     private void FixedUpdate()  // 물리 연산 프레임마다 호출되는 생명주기 함수
     {
-       
-        //rigid.MovePosition(rigid.position + inputVec);
-        
-        
-        /*rigid.AddForce(inputVec);   // 힘을 주기
+        h = Input.GetAxis("Horizontal");                  //키 입력 방향 우측:1, 좌측 :-1
 
-        rigid.velocity= inputVec;   // 속도 제어
+    }
+    private void OnCollisionEnter2D(Collision2D collision)
+    {
+        if (collision.gameObject.tag == "Enemy")
+            OnDamaged(collision.transform.position);
+        //Debug.Log("피격");
+        
+    }
+    void OnDamaged(Vector2 targetPos)
+    {
+        gameObject.layer = 9;
 
-        rigid.MovePosition(rigid.position + inputVec);  // 위치 이동*/
+        spriteRenderer.color = new Color(1, 1, 1, 0.1f);
+
+        int dirc = transform.position.x - targetPos.x > 0 ? 1 : 0;
+        rigid.AddForce(new Vector2(dirc,1),ForceMode2D.Impulse);
+
+        Invoke("OffDamaged",3);
+    }
+    void OffDamaged()
+    {
+        gameObject.layer = 7;
+        spriteRenderer.color = new Color(1, 1, 1, 10);
     }
 
-  //-----------------------------------------------------------------------------------------------------------
+
+
+    //-----------------------------------------------------------------------------------------------------------
     // ----------- delegate-----------
     Action<float> onHPChange;
     // ---------------------------------
 
     private void Update()
     {
+        if (Input.GetKeyDown(KeyCode.UpArrow))
+        {
+            rigid.AddForce(Vector2.up * JumpPower, ForceMode2D.Impulse);
+        }
+        transform.Translate(Time.deltaTime * MoveSpeed * inputDir);
+
+        if (Input.GetKeyDown(KeyCode.UpArrow) && jumpCount < 2)
+        {
+            rigid.AddForce(Vector2.up * JumpPower * 2, ForceMode2D.Impulse);
+            jumpCount++;
+        }
         if (currentExp >= maxExp)
         {
             LevelUp();

@@ -72,7 +72,7 @@ public class Singleton<T> : MonoBehaviour where T : Component
             mainSceneIndex = active.buildIndex;
         }
     }
-    protected virtual void initilize()
+    protected virtual void Initialize()
     {
 
     }

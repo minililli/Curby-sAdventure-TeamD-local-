@@ -13,7 +13,7 @@ TagManager:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - Item
+  - 
   - Water
   - UI
   - Enemy
@@ -22,7 +22,7 @@ TagManager:
   - PlayerDamaged
   - Platform
   - BackGruond
-  - 
+  - Item
   - 
   - 
   - 

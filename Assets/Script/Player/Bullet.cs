@@ -4,11 +4,13 @@ using UnityEngine;
 
 public class Bullet : PoolObject
 {
-    Player player;
-    Transform transBullet;
-    Rigidbody2D rigidBullet;
-   
+    Skill3 skill3;
+    Transform tran_Skill_Bullet;
+    Rigidbody2D rigi_Skill_Bullet;
     public float speed = 1.0f;
+    public float skillpoint = 1.0f;
+
+  
     /// <summary>
     /// 피격효과 effect 종류
     /// </summary>
@@ -16,14 +18,21 @@ public class Bullet : PoolObject
     
     private void Awake()
     {
-        rigidBullet = GetComponent<Rigidbody2D>();
-        transBullet = GetComponent<Transform>();
-        
+        rigi_Skill_Bullet = GetComponent<Rigidbody2D>();
+        tran_Skill_Bullet = GetComponent<Transform>();
+        skill3 = FindObjectOfType<Skill3>();
     }
 
     private void Start()
     {
-        rigidBullet.velocity = speed * Vector3.right;
+        if(!skill3.isLeft)
+        {
+            rigi_Skill_Bullet.velocity = speed * Vector3.right;
+        }
+        else
+        {
+            rigi_Skill_Bullet.velocity = speed * Vector3.left;
+        }
         
         Destroy(gameObject, 5.0f);
     }
@@ -31,7 +40,8 @@ public class Bullet : PoolObject
     private void OnCollisionEnter2D(Collision2D collision)
     {
         if (collision.gameObject.CompareTag("Enemy") || collision.gameObject.CompareTag("Platform"))
-        {
+        {            
+        
             //스킬맞았을 때 이펙트발동
             OnHitEffect(collision);
             //Debug.Log($"공격이 {collision.gameObject.name}과 충돌");

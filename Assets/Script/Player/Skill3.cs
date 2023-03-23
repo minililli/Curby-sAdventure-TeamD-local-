@@ -91,8 +91,8 @@ public class Skill3 : PoolObject
     public void OnSkill3(InputAction.CallbackContext context)   // 키보드 A키
     {
         GameObject obj = Factory.Inst.GetObject(PoolObjectType.Bullet); //풀에서 Bullet빼서쓰는걸로 변경함
-        float posX = transSkill.position.x;
-        float posY = transSkill.position.y;
+        float posX = 0.0f;//transSkill.position.x;
+        float posY = 0.0f; //transSkill.position.y;
         if(isLeft)
         {
             obj.transform.position = new Vector2(posX - 1, posY);
@@ -141,10 +141,10 @@ public class Skill3 : PoolObject
         }        
     }
 
-    public void OnSkill3(InputAction.CallbackContext context)   // 키보드 D
-    {
-        StartCoroutine(skillCoroutine);        
-    }
+    //public void OnSkill3(InputAction.CallbackContext context)   // 키보드 D
+    //{
+    //    StartCoroutine(skillCoroutine);        
+    //}
 
     public void OffSkill3(InputAction.CallbackContext context)   // 키보드 D
     {

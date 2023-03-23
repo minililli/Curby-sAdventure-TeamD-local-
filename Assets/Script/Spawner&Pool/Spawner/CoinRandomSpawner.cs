@@ -1,9 +1,10 @@
 using System;
 using System.Collections;
 using UnityEngine;
+using static UnityEngine.EventSystems.EventTrigger;
 
-public class Coin1Spawner : Spawner
-{
+public class CoinRandomSpawner : Spawner
+{ 
     private void OnEnable()
     {
         interval = 0.5f;
@@ -16,12 +17,15 @@ public class Coin1Spawner : Spawner
         {
             yield return new WaitForSeconds(interval);
 
-            GameObject obj = Factory.Inst.GetObject(PoolObjectType.CoinCopper);   // 오브젝트 스포너위치에서 생성              
+
+
+            GameObject obj = Factory.Inst.GetObject(RandomCoinPool.RandomCoin());   // 오브젝트 스포너위치에서 생성                                           //Debug.Log(obj.transform.position);
             obj.transform.position = transform.position;  // 스포너 위치로 이동
             float r = UnityEngine.Random.Range(minY, maxY);
             obj.transform.Translate(Vector3.up * r);
         }
     }
+
     private void OnDrawGizmos()
     {
         //스폰위치 확인용

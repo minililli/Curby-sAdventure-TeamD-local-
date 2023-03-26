@@ -12,7 +12,7 @@ public class EnemySpawner : Spawner
             yield return new WaitForSeconds(interval);
 
             GameObject obj = Factory.Inst.GetObject(PoolObjectType.Enemy);   // 오브젝트 스포너위치에서 생성                               
-            EnemyBase enemy = obj.GetComponent<EnemyBase>();
+            Enemy_Boxboxer enemy = obj.GetComponent<Enemy_Boxboxer>();
 
             enemy.transform.position = transform.position;
             Debug.Log(enemy.transform.position);

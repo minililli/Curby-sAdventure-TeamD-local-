@@ -152,13 +152,29 @@ public class Player : StateBase
             if (collision.gameObject.CompareTag("Enemy") || collision.gameObject.CompareTag("EnemyAttack"))         // Enemy와 충돌시 HP 감소
             {
                 OnDamaged(collision.transform.position);   // 무적
-            }             
+            }            
+            else if(collision.gameObject.CompareTag("Platform"))    //부딪힌 태그가 Platform이면
+            {
+                LandBase land = collision.gameObject.GetComponent<LandBase>();
+                land.onRide += OnRidePlatform;
+                jumpCount = 0;
+            }
         }        
         else if (HP < 0)// player 사망처리
         {
             isPlayerDead = true;
             PlayerDie();
         }
+    }
+    /// <summary>
+    /// 플랫폼에서 벗어나면, onRidePlatform 실행X
+    /// </summary>
+    /// <param name="collision"></param>
+    private void OnCollisionExit2D(Collision2D collision)
+    {
+
+        LandBase land = collision.gameObject.GetComponent<LandBase>();
+        land.onRide -= OnRidePlatform;
     }
 
     private void Update()
@@ -308,5 +324,8 @@ public class Player : StateBase
         
     }
 
-
+    private void OnRidePlatform(Vector2 delta)
+    {
+        rigid.MovePosition(rigid.position + delta);
+    }
 }

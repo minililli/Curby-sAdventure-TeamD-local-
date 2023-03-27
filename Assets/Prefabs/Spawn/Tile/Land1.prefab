@@ -266,7 +266,7 @@ GameObject:
   - component: {fileID: 3263323849667902401}
   m_Layer: 10
   m_Name: Land1
-  m_TagString: Untagged
+  m_TagString: Platform
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

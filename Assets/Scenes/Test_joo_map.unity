@@ -144,7 +144,7 @@ GameObject:
   - component: {fileID: 268724108}
   m_Layer: 0
   m_Name: LandPrefab
-  m_TagString: Untagged
+  m_TagString: Platform
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -807,6 +807,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: greenland15
       objectReference: {fileID: 0}
+    - target: {fileID: 8266325033668781763, guid: 372708d310983664091d0e0573a37596, type: 3}
+      propertyPath: m_TagString
+      value: Platform
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 372708d310983664091d0e0573a37596, type: 3}
 --- !u!1001 &946031053749809339
@@ -819,6 +823,10 @@ PrefabInstance:
     - target: {fileID: 2912834871573799180, guid: 75aadfde77b4b8142ae29265210c2a1b, type: 3}
       propertyPath: m_Name
       value: greenland1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2912834871573799180, guid: 75aadfde77b4b8142ae29265210c2a1b, type: 3}
+      propertyPath: m_TagString
+      value: Platform
       objectReference: {fileID: 0}
     - target: {fileID: 4037011338323791703, guid: 75aadfde77b4b8142ae29265210c2a1b, type: 3}
       propertyPath: m_RootOrder
@@ -921,6 +929,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: greenland7
       objectReference: {fileID: 0}
+    - target: {fileID: 4846544935909585527, guid: f5304f05483b38548b293e7de90f4baa, type: 3}
+      propertyPath: m_TagString
+      value: Platform
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f5304f05483b38548b293e7de90f4baa, type: 3}
 --- !u!1001 &1722854541227869011
@@ -933,6 +945,10 @@ PrefabInstance:
     - target: {fileID: 784870104926349402, guid: 94d7e2f397b43dc49b606a88f1ee6caa, type: 3}
       propertyPath: m_Name
       value: greenland14
+      objectReference: {fileID: 0}
+    - target: {fileID: 784870104926349402, guid: 94d7e2f397b43dc49b606a88f1ee6caa, type: 3}
+      propertyPath: m_TagString
+      value: Platform
       objectReference: {fileID: 0}
     - target: {fileID: 7317803618149070995, guid: 94d7e2f397b43dc49b606a88f1ee6caa, type: 3}
       propertyPath: m_RootOrder
@@ -991,6 +1007,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: greenland5
       objectReference: {fileID: 0}
+    - target: {fileID: 6492272241785381676, guid: ca38cb8235c86e747b53dde2086a36da, type: 3}
+      propertyPath: m_TagString
+      value: Platform
+      objectReference: {fileID: 0}
     - target: {fileID: 8939383569307112560, guid: ca38cb8235c86e747b53dde2086a36da, type: 3}
       propertyPath: m_RootOrder
       value: 4
@@ -1047,6 +1067,10 @@ PrefabInstance:
     - target: {fileID: 2705156891939425569, guid: bd9af257cc8b19042878d70eed3266a9, type: 3}
       propertyPath: m_Name
       value: greenland4
+      objectReference: {fileID: 0}
+    - target: {fileID: 2705156891939425569, guid: bd9af257cc8b19042878d70eed3266a9, type: 3}
+      propertyPath: m_TagString
+      value: Platform
       objectReference: {fileID: 0}
     - target: {fileID: 3339903315977503977, guid: bd9af257cc8b19042878d70eed3266a9, type: 3}
       propertyPath: m_RootOrder
@@ -1107,11 +1131,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3313352767453639680, guid: c83a5a9c6a2cc714d95b94e42d6830c0, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -6.58
+      value: -1.9
       objectReference: {fileID: 0}
     - target: {fileID: 3313352767453639680, guid: c83a5a9c6a2cc714d95b94e42d6830c0, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -1.83
+      value: -1.23
       objectReference: {fileID: 0}
     - target: {fileID: 3313352767453639680, guid: c83a5a9c6a2cc714d95b94e42d6830c0, type: 3}
       propertyPath: m_LocalPosition.z
@@ -1218,6 +1242,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: greenland11
       objectReference: {fileID: 0}
+    - target: {fileID: 3549751272681187694, guid: 85742080e2a826d49ada5fdd2447a06b, type: 3}
+      propertyPath: m_TagString
+      value: Platform
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 85742080e2a826d49ada5fdd2447a06b, type: 3}
 --- !u!1001 &4102809457774598963
@@ -1230,6 +1258,10 @@ PrefabInstance:
     - target: {fileID: 1976729462412218515, guid: be8ac6aa589f3eb479b62029a59b7c3a, type: 3}
       propertyPath: m_Name
       value: greenland3
+      objectReference: {fileID: 0}
+    - target: {fileID: 1976729462412218515, guid: be8ac6aa589f3eb479b62029a59b7c3a, type: 3}
+      propertyPath: m_TagString
+      value: Platform
       objectReference: {fileID: 0}
     - target: {fileID: 6183983649967705545, guid: be8ac6aa589f3eb479b62029a59b7c3a, type: 3}
       propertyPath: m_RootOrder
@@ -1332,6 +1364,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: greenland16
       objectReference: {fileID: 0}
+    - target: {fileID: 7598557576028826513, guid: ea245ea3f5880c5448a2c775c21f731e, type: 3}
+      propertyPath: m_TagString
+      value: Platform
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: ea245ea3f5880c5448a2c775c21f731e, type: 3}
 --- !u!1001 &5886609212174342706
@@ -1389,6 +1425,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: greenland17
       objectReference: {fileID: 0}
+    - target: {fileID: 7042933923105397917, guid: 47f0bf345647a1748859db1b907fafeb, type: 3}
+      propertyPath: m_TagString
+      value: Platform
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 47f0bf345647a1748859db1b907fafeb, type: 3}
 --- !u!1001 &6012406924908417534
@@ -1401,6 +1441,10 @@ PrefabInstance:
     - target: {fileID: 3787742705070514812, guid: f120466c12d066349ac3fb53639bc545, type: 3}
       propertyPath: m_Name
       value: greenland12
+      objectReference: {fileID: 0}
+    - target: {fileID: 3787742705070514812, guid: f120466c12d066349ac3fb53639bc545, type: 3}
+      propertyPath: m_TagString
+      value: Platform
       objectReference: {fileID: 0}
     - target: {fileID: 5000356445175284074, guid: f120466c12d066349ac3fb53639bc545, type: 3}
       propertyPath: m_RootOrder
@@ -1458,6 +1502,10 @@ PrefabInstance:
     - target: {fileID: 1635807140447763409, guid: 2a5d278f0918bfd42acc86697811fd2b, type: 3}
       propertyPath: m_Name
       value: greenland6
+      objectReference: {fileID: 0}
+    - target: {fileID: 1635807140447763409, guid: 2a5d278f0918bfd42acc86697811fd2b, type: 3}
+      propertyPath: m_TagString
+      value: Platform
       objectReference: {fileID: 0}
     - target: {fileID: 2476498920629105122, guid: 2a5d278f0918bfd42acc86697811fd2b, type: 3}
       propertyPath: m_RootOrder
@@ -1560,6 +1608,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: greenland10
       objectReference: {fileID: 0}
+    - target: {fileID: 1963060341439732324, guid: e5ecaa0b78a42bc49b0fdae6f6271d77, type: 3}
+      propertyPath: m_TagString
+      value: Platform
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: e5ecaa0b78a42bc49b0fdae6f6271d77, type: 3}
 --- !u!1001 &7278646595525603116
@@ -1616,6 +1668,10 @@ PrefabInstance:
     - target: {fileID: 3050280756892141689, guid: bf464687198e9514680b4570af7a58b3, type: 3}
       propertyPath: m_Name
       value: greenland18
+      objectReference: {fileID: 0}
+    - target: {fileID: 3050280756892141689, guid: bf464687198e9514680b4570af7a58b3, type: 3}
+      propertyPath: m_TagString
+      value: Platform
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: bf464687198e9514680b4570af7a58b3, type: 3}
@@ -1674,6 +1730,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: greenland2
       objectReference: {fileID: 0}
+    - target: {fileID: 6302123976897465089, guid: 0955b35030cb8d54cb58417af905126a, type: 3}
+      propertyPath: m_TagString
+      value: Platform
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 0955b35030cb8d54cb58417af905126a, type: 3}
 --- !u!1001 &8137724299561622265
@@ -1730,6 +1790,10 @@ PrefabInstance:
     - target: {fileID: 2277941658931555152, guid: c7c318542c627c24287d06d4111b2dbb, type: 3}
       propertyPath: m_Name
       value: greenland9
+      objectReference: {fileID: 0}
+    - target: {fileID: 2277941658931555152, guid: c7c318542c627c24287d06d4111b2dbb, type: 3}
+      propertyPath: m_TagString
+      value: Platform
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: c7c318542c627c24287d06d4111b2dbb, type: 3}
@@ -1788,6 +1852,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: greenland8
       objectReference: {fileID: 0}
+    - target: {fileID: 8365347483766913670, guid: 41cda9a101441ab4cafbe10aa30d239c, type: 3}
+      propertyPath: m_TagString
+      value: Platform
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 41cda9a101441ab4cafbe10aa30d239c, type: 3}
 --- !u!1001 &8507086216910740614
@@ -1800,6 +1868,10 @@ PrefabInstance:
     - target: {fileID: 6543380005547291216, guid: 14566f23c0b51c547947a37ca509d595, type: 3}
       propertyPath: m_Name
       value: greenland13
+      objectReference: {fileID: 0}
+    - target: {fileID: 6543380005547291216, guid: 14566f23c0b51c547947a37ca509d595, type: 3}
+      propertyPath: m_TagString
+      value: Platform
       objectReference: {fileID: 0}
     - target: {fileID: 9170448249500853348, guid: 14566f23c0b51c547947a37ca509d595, type: 3}
       propertyPath: m_RootOrder

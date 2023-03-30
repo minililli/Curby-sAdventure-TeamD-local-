@@ -10,6 +10,7 @@ public class LandBase : PoolObject
     Vector2 moveDir;
     Vector2 moveDelta;
     Transform targetTransform;
+    Rigidbody2D rigid;
 
     bool ridePlatform = false;
 
@@ -18,24 +19,28 @@ public class LandBase : PoolObject
     private void Awake()
     {
         targetTransform = FindObjectOfType<Player>().transform;
+        rigid = GetComponent<Rigidbody2D>();
     }
 
     private void Start()
     {
-
+        
     }
 
     private void FixedUpdate()
     {
-        transform.Translate(Time.fixedDeltaTime*moveSpeed*Vector2.left);
+        transform.Translate(Time.fixedDeltaTime * moveSpeed * Vector2.left);
+        //Debug.Log($"{gameObject.name} , {transform.position}");
+        OnMove(Time.fixedDeltaTime * moveSpeed * Vector2.left);
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        ridePlatform = true;
-        if(ridePlatform)
+
+        if (collision.gameObject.CompareTag("Player"))
         {
-            OnMove();
+            ridePlatform = true;
+            
         }
     }
 
@@ -47,10 +52,15 @@ public class LandBase : PoolObject
         }
     }
 
-    void OnMove()
+    void OnMove(Vector2 delta)
     {
-        moveDir = targetTransform.position- transform.position;
-        moveDelta = (Time.fixedDeltaTime * moveSpeed * moveDir);
-        onRide?.Invoke(moveDelta);
+        if (ridePlatform)
+        {
+            moveDir = targetTransform.position - transform.position;
+            moveDelta = (Time.fixedDeltaTime * moveSpeed * moveDir);
+
+            Debug.Log($"OnMove : {delta}");
+            onRide?.Invoke(delta);
+        }
     }
 }

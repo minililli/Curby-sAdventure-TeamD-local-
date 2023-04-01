@@ -6,6 +6,7 @@ using Unity.VisualScripting;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.XR;
 using static UnityEngine.EventSystems.EventTrigger;
 
 public class Player : StateBase
@@ -13,13 +14,19 @@ public class Player : StateBase
     SpriteRenderer spriteRenderer;
     PlayerInputAction inputActions;
     Animator anim;
+    LandBase landbase;
     //Animator animSkill1;
     //Animator animSkill2;
     Rigidbody2D rigid;
     //EnemyBase enemy;
-    LandBase land;
-
-    Vector3 inputDir = Vector3.zero;
+    // -------------------------------------연주수정중
+    Vector3 distance;
+    bool onLand;
+    bool onmoved;
+    GameObject contactPlatform;
+    Transform collisionmovetransform;
+    //-----------------------------------------
+    Vector3 inputDir;
 
     public Vector2 inputVec;
     protected bool isLeft = false;            //마지막 키 입력 방향 확인용 
@@ -33,7 +40,7 @@ public class Player : StateBase
     [Header("스탯관련-------------------------------------")]
     public float MoveSpeed = 0.1f;
     public float JumpPower = 10.0f;
-    public float jumpCount;
+    int jumpCount;
 
     //---------------------------------------------------------------------------------------------------
 
@@ -43,7 +50,7 @@ public class Player : StateBase
         spriteRenderer = GetComponent<SpriteRenderer>();
         rigid = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
-        //land = FindObjectOfType<LandBase>();
+        landbase = FindObjectOfType<LandBase>();
         InitStat();
 
         //enemy = FindObjectOfType<EnemyBase>(); // 적 찾아오기 
@@ -52,7 +59,6 @@ public class Player : StateBase
     private void Start()
     {
         moveSpeed = MoveSpeed;
-
         //animSkill1 = skill1.GetComponent<Animator>();
         //animSkill2 = skill2.GetComponent<Animator>();
     }
@@ -80,8 +86,11 @@ public class Player : StateBase
     private void OnMoveInput(InputAction.CallbackContext context)
     {
         Vector2 dir = context.ReadValue<Vector2>();
+
         inputDir = dir;
         playerH = dir.x;
+        if (dir != Vector2.zero) { onmoved = true; }
+        else { onmoved = false; }
         if (playerH > 0)                                            // 마지막 키 입력 방향 확인용 
         {
             isLeft = false;
@@ -131,9 +140,9 @@ public class Player : StateBase
         else if (rigid.velocity.x < MoveSpeed * (-1))
         {
             rigid.velocity = new Vector2(MoveSpeed * (-1), rigid.velocity.y);
-        
 
-            if (rigid.velocity.y < 0)
+
+            if (rigid.velocity.y <= 0)
             {
                 Debug.DrawRay(rigid.position, Vector3.down, new Color(0, 1, 0));
                 RaycastHit2D rayHit = Physics2D.Raycast(rigid.position, Vector3.down, 1, LayerMask.GetMask("Platform"));
@@ -141,12 +150,26 @@ public class Player : StateBase
                 {
                     if (rayHit.distance < 0.5f)
                     {
+                        anim.SetBool("Jump", false);
                         jumpCount = 0;
+                        onLand = true;
                     }
-                    anim.SetBool("Jump", false);
                 }
             }
         }
+        if (contactPlatform != null && onLand)
+        {
+            if (rigid.velocity == Vector2.zero && !onmoved)
+            {
+                transform.position = contactPlatform.transform.position - distance;
+            }
+            else if (rigid.velocity == Vector2.zero && onmoved)
+            {
+                transform.position = collisionmovetransform.position;
+            }
+        }
+
+
     }
 
 
@@ -160,12 +183,17 @@ public class Player : StateBase
             }
             else if (collision.gameObject.CompareTag("Platform"))    //부딪힌 태그가 Platform이면
             {
-                land = collision.transform.GetComponent<LandBase>();
-                if (land!= null)
+
+                LandBase land = collision.gameObject.GetComponent<LandBase>();
+                if (land != null)
                 {
-                    //rigid.position = collision.rigidbody.position;
-                    land.onRide += OnRidePlatform;
-                    anim.SetBool("Walking", true);
+                    contactPlatform = land.gameObject;
+                    distance = contactPlatform.transform.position - transform.position;
+                    onLand = true;
+                    //rigid.position = collision.rigidbody.position; //순간이동됌
+                    //land.onRide += OnRidePlatform;
+
+                    StartCoroutine(CheckLocation());
                 }
 
                 jumpCount = 0;
@@ -177,78 +205,102 @@ public class Player : StateBase
             PlayerDie();
         }
     }
-    /// <summary>
-    /// 플랫폼에서 벗어나면, onRidePlatform 실행X
-    /// </summary>
-    /// <param name="collision"></param>
-    private void OnCollisionExit2D(Collision2D collision)
+
+    private void OnCollisionStay2D(Collision2D collision)
     {
-
-        LandBase curLand = collision.gameObject.GetComponent<LandBase>();
-        if (land != null && curLand == land)
+        if (collision.gameObject.CompareTag("Platform") && onLand)
         {
-            jumpCount = 0; 
-            land.onRide -= OnRidePlatform;
+            if (transform.position != contactPlatform.transform.position)
+            {
+                onmoved = true;
+                if (onmoved &&rigid.velocity == Vector2.zero)
+                {
+                    contactPlatform.transform.position = transform.position;
+                    onmoved = false;
+                    rigid.velocity = Vector2.zero;
+                }
+            }
+
         }
     }
 
-    private void Update()
-    {
-        if (Mathf.Abs(rigid.velocity.x) < 0.3)  // 애니메이션 
+        /// <summary>
+        /// 플랫폼에서 벗어나면, onRidePlatform 실행X
+        /// </summary>
+        /// <param name="collision"></param>
+        private void OnCollisionExit2D(Collision2D collision)
         {
-            anim.SetBool("Walking", false);
-        }
-        else
-        {
-            anim.SetBool("Walking", true);
-        }
-
-        if (Input.GetButton("Horizontal"))
-        {
-            spriteRenderer.flipX = Input.GetAxisRaw("Horizontal") == -1;
-        }
-
-        transform.Translate(Time.deltaTime * MoveSpeed * inputDir);
-
-        if (Input.GetButtonDown("Jump") && jumpCount < 2)
-        {
-            rigid.AddForce(Vector2.up * JumpPower * 2, ForceMode2D.Impulse);
-            jumpCount++;
-            anim.SetBool("Jump", true);
+            if (collision.gameObject.CompareTag("Platform") && onLand)
+            {
+                onmoved = false;
+                onLand = false;
+            }
+            //StartCoroutine(CheckLocation());
+            /*  LandBase land = FindObjectOfType<LandBase>();
+              LandBase curLand = collision.transform.GetComponent<LandBase>();
+              if (curLand != null)
+              {
+                  //land.onRide -= OnRidePlatform;
+              }*/
         }
 
-        if (currentExp >= maxExp)
+        private void Update()
         {
-            LevelUp();
+            if (Mathf.Abs(rigid.velocity.x) < 0.3)  // 애니메이션 
+            {
+                anim.SetBool("Walking", false);
+            }
+            else
+            {
+                anim.SetBool("Walking", true);
+            }
+
+            if (Input.GetButton("Horizontal"))
+            {
+                spriteRenderer.flipX = Input.GetAxisRaw("Horizontal") == -1;
+            }
+
+            //transform.Translate(Time.deltaTime * MoveSpeed * inputDir);
+
+            if (Input.GetButtonDown("Jump") && jumpCount < 2)
+            {
+                rigid.AddForce(Vector2.up * JumpPower * 2, ForceMode2D.Impulse);
+                jumpCount++;
+                anim.SetBool("Jump", true);
+            }
+
+            if (currentExp >= maxExp)
+            {
+                LevelUp();
+            }
         }
-    }
-    /// <summary>
-    /// -----------------------무적/데미지관련----------------------------
-    /// <summary>
-    ///  무적 판정 처리 
-    /// </summary>
-    /// <param name="targetPos"></param>
-    void OnDamaged(Vector2 targetPos)
-    {
-        //HP -= enemy.EnemyAttack();
+        /// <summary>
+        /// -----------------------무적/데미지관련----------------------------
+        /// <summary>
+        ///  무적 판정 처리 
+        /// </summary>
+        /// <param name="targetPos"></param>
+        void OnDamaged(Vector2 targetPos)
+        {
+            //HP -= enemy.EnemyAttack();
 
-        OnInvincibleMode();
-        int dirc = transform.position.x - targetPos.x > 0 ? 1 : 0;
-        rigid.AddForce(new Vector2(dirc, 1), ForceMode2D.Impulse);
-    }
+            OnInvincibleMode();
+            int dirc = transform.position.x - targetPos.x > 0 ? 1 : 0;
+            rigid.AddForce(new Vector2(dirc, 1), ForceMode2D.Impulse);
+        }
 
-    public void OnInvincibleMode()
-    {   //무적 처리 코드 
-        gameObject.layer = 9;
-        spriteRenderer.color = new Color(1, 1, 1, 0.1f);
-        Invoke("OffDamaged", 3);
-    }
+        public void OnInvincibleMode()
+        {   //무적 처리 코드 
+            gameObject.layer = 9;
+            spriteRenderer.color = new Color(1, 1, 1, 0.1f);
+            Invoke("OffDamaged", 3);
+        }
 
-    void OffDamaged()
-    {
-        gameObject.layer = 7;
-        spriteRenderer.color = new Color(1, 1, 1, 10);
-    }
+        void OffDamaged()
+        {
+            gameObject.layer = 7;
+            spriteRenderer.color = new Color(1, 1, 1, 10);
+        }
 
     protected int Level;
 
@@ -260,7 +312,7 @@ public class Player : StateBase
         {
             currentHp = value;
             onHPChange?.Invoke(currentHp);
-            Debug.Log($"현재 HP:{currentHp}");
+            //Debug.Log($"현재 HP:{currentHp}");
         }
     }
 
@@ -273,7 +325,7 @@ public class Player : StateBase
         {
             currentExp = value;
             onEXPChange?.Invoke(currentExp);
-            Debug.Log($"Current Exp:{currentExp}");
+            //Debug.Log($"Current Exp:{currentExp}");
         }
     }
     int getExp;                                 //얻은 경험치
@@ -339,10 +391,23 @@ public class Player : StateBase
 
     }
 
-    private void OnRidePlatform(Vector2 delta)
+    /* private void OnRidePlatform(Vector2 delta)
+     {
+         //Debug.Log($"Player delta : {delta}");
+         //rigid.velocity = Vector2.zero;
+         rigid.MovePosition(rigid.position + delta);
+     }*/
+
+    public Action onCheckLocation;
+    IEnumerator CheckLocation()
     {
-        Debug.Log($"OnRidePlatform : {delta}");
-        rigid.velocity = Vector2.zero;
-        rigid.MovePosition(rigid.position+delta);
+        while (true)
+        {
+
+            Debug.Log($" Player location Start : {transform.position}");
+            onCheckLocation?.Invoke();
+            yield return new WaitForSeconds(1.0f);
+            Debug.Log($"Player location End : {transform.position}");
+        }
     }
 }

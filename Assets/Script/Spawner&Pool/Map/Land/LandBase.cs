@@ -6,6 +6,7 @@ using UnityEngine;
 public class LandBase : PoolObject
 {
     public float moveSpeed = 1;
+    Player player;
     Transform currentTransform;
     Vector2 moveDir;
     Vector2 moveDelta;
@@ -20,18 +21,19 @@ public class LandBase : PoolObject
     {
         targetTransform = FindObjectOfType<Player>().transform;
         rigid = GetComponent<Rigidbody2D>();
+         player = FindObjectOfType<Player>();
     }
 
     private void Start()
     {
-        
+      
     }
 
     private void FixedUpdate()
     {
         transform.Translate(Time.fixedDeltaTime * moveSpeed * Vector2.left);
         //Debug.Log($"{gameObject.name} , {transform.position}");
-        OnMove(Time.fixedDeltaTime * moveSpeed * Vector2.left);
+       // OnMove(Time.fixedDeltaTime * moveSpeed * Vector2.left);
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
@@ -40,7 +42,7 @@ public class LandBase : PoolObject
         if (collision.gameObject.CompareTag("Player"))
         {
             ridePlatform = true;
-            
+            //player.onCheckLocation += LandPosition;
         }
     }
 
@@ -56,11 +58,26 @@ public class LandBase : PoolObject
     {
         if (ridePlatform)
         {
-            moveDir = targetTransform.position - transform.position;
-            moveDelta = (Time.fixedDeltaTime * moveSpeed * moveDir);
+            /*   moveDir = targetTransform.position - transform.position;
+               moveDelta = (Time.fixedDeltaTime * moveSpeed * moveDir);*/
+            //Debug.Log($"LandBase delta : {delta}");
 
-            Debug.Log($"OnMove : {delta}");
-            onRide?.Invoke(delta);
+            //onRide?.Invoke(delta);
+        }
+    }
+
+    void LandPosition()
+    {
+        StartCoroutine(CheckLocation());
+    }
+    
+    IEnumerator CheckLocation()
+    {
+        while (true)
+        {
+            Debug.Log($"curland location Start : {transform.position}");
+            yield return new WaitForSeconds(1.0f);
+            Debug.Log($"curland location End : {transform.position}");
         }
     }
 }

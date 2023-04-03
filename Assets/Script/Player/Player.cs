@@ -20,11 +20,9 @@ public class Player : StateBase
     Rigidbody2D rigid;
     //EnemyBase enemy;
     // -------------------------------------연주수정중
-    Vector3 distance;
-    bool onLand;
-    bool onmoved;
-    GameObject contactPlatform;
-    Transform collisionmovetransform;
+    bool onLand = false;
+    bool canFallDown=false;
+    CapsuleCollider2D playercollider;
     //-----------------------------------------
     Vector3 inputDir;
 
@@ -89,8 +87,7 @@ public class Player : StateBase
 
         inputDir = dir;
         playerH = dir.x;
-        if (dir != Vector2.zero) { onmoved = true; }
-        else { onmoved = false; }
+        
         if (playerH > 0)                                            // 마지막 키 입력 방향 확인용 
         {
             isLeft = false;
@@ -152,24 +149,16 @@ public class Player : StateBase
                     {
                         anim.SetBool("Jump", false);
                         jumpCount = 0;
-                        onLand = true;
                     }
                 }
             }
         }
-        if (contactPlatform != null && onLand)
+        // ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
+        if(canFallDown &&  inputDir.y < 0 ) // && 스페이스바눌를때)
         {
-            if (rigid.velocity == Vector2.zero && !onmoved)
-            {
-                transform.position = contactPlatform.transform.position - distance;
-            }
-            else if (rigid.velocity == Vector2.zero && onmoved)
-            {
-                transform.position = collisionmovetransform.position;
-            }
+            OnFallDown();
         }
-
-
+        //ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
     }
 
 
@@ -183,20 +172,18 @@ public class Player : StateBase
             }
             else if (collision.gameObject.CompareTag("Platform"))    //부딪힌 태그가 Platform이면
             {
-
-                LandBase land = collision.gameObject.GetComponent<LandBase>();
-                if (land != null)
+                if (onLand)
                 {
-                    contactPlatform = land.gameObject;
-                    distance = contactPlatform.transform.position - transform.position;
-                    onLand = true;
-                    //rigid.position = collision.rigidbody.position; //순간이동됌
-                    //land.onRide += OnRidePlatform;
-
-                    StartCoroutine(CheckLocation());
+                
+                    canFallDown = true;
                 }
-
+                else
+                {
+                    canFallDown = false;
+                }
+                
                 jumpCount = 0;
+
             }
         }
         else if (HP < 0)// player 사망처리
@@ -206,101 +193,83 @@ public class Player : StateBase
         }
     }
 
-    private void OnCollisionStay2D(Collision2D collision)
+    /// <summary>ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
+    /// Land에서 떨어질 때 실행되는 함수
+    /// </summary>
+    private void OnFallDown()
     {
-        if (collision.gameObject.CompareTag("Platform") && onLand)
-        {
-            if (transform.position != contactPlatform.transform.position)
-            {
-                onmoved = true;
-                if (onmoved &&rigid.velocity == Vector2.zero)
-                {
-                    contactPlatform.transform.position = transform.position;
-                    onmoved = false;
-                    rigid.velocity = Vector2.zero;
-                }
-            }
+        anim.SetBool("Jump", false);
+        anim.SetBool("Walking", false);
+        StartCoroutine(Falling());
+    }
+    /// <summary>
+    /// Land에서 내려갈때 플레이어의 Collider 활성화/비활성화
+    /// </summary>
+    /// <returns></returns>
+    IEnumerator Falling()
+    {
+        playercollider.enabled = false;
+        yield return new WaitForSeconds(0.1f);
+        playercollider.enabled = true;
+    }
+    //ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
 
+    private void Update()
+    {
+        if (Mathf.Abs(rigid.velocity.x) < 0.3)  // 애니메이션 
+        {
+            anim.SetBool("Walking", false);
+        }
+        else
+        {
+            anim.SetBool("Walking", true);
+        }
+
+        if (Input.GetButton("Horizontal"))
+        {
+            spriteRenderer.flipX = Input.GetAxisRaw("Horizontal") == -1;
+        }
+
+      
+        if (Input.GetButtonDown("Jump") && jumpCount < 2)
+        {
+            rigid.AddForce(Vector2.up * JumpPower * 2, ForceMode2D.Impulse);
+            jumpCount++;
+            anim.SetBool("Jump", true);
+        }
+
+        if (currentExp >= maxExp)
+        {
+            LevelUp();
         }
     }
+    /// <summary>
+    /// -----------------------무적/데미지관련----------------------------
+    /// <summary>
+    ///  무적 판정 처리 
+    /// </summary>
+    /// <param name="targetPos"></param>
+    void OnDamaged(Vector2 targetPos)
+    {
+        //HP -= enemy.EnemyAttack();
 
-        /// <summary>
-        /// 플랫폼에서 벗어나면, onRidePlatform 실행X
-        /// </summary>
-        /// <param name="collision"></param>
-        private void OnCollisionExit2D(Collision2D collision)
-        {
-            if (collision.gameObject.CompareTag("Platform") && onLand)
-            {
-                onmoved = false;
-                onLand = false;
-            }
-            //StartCoroutine(CheckLocation());
-            /*  LandBase land = FindObjectOfType<LandBase>();
-              LandBase curLand = collision.transform.GetComponent<LandBase>();
-              if (curLand != null)
-              {
-                  //land.onRide -= OnRidePlatform;
-              }*/
-        }
+        OnInvincibleMode();
+        int dirc = transform.position.x - targetPos.x > 0 ? 1 : 0;
+        rigid.AddForce(new Vector2(dirc, 1), ForceMode2D.Impulse);
+    }
 
-        private void Update()
-        {
-            if (Mathf.Abs(rigid.velocity.x) < 0.3)  // 애니메이션 
-            {
-                anim.SetBool("Walking", false);
-            }
-            else
-            {
-                anim.SetBool("Walking", true);
-            }
+    public void OnInvincibleMode()
+    {   //무적 처리 코드 
+        gameObject.layer = 9;
+        spriteRenderer.color = new Color(1, 1, 1, 0.1f);
+        Invoke("OffDamaged", 3);
+    }
 
-            if (Input.GetButton("Horizontal"))
-            {
-                spriteRenderer.flipX = Input.GetAxisRaw("Horizontal") == -1;
-            }
-
-            //transform.Translate(Time.deltaTime * MoveSpeed * inputDir);
-
-            if (Input.GetButtonDown("Jump") && jumpCount < 2)
-            {
-                rigid.AddForce(Vector2.up * JumpPower * 2, ForceMode2D.Impulse);
-                jumpCount++;
-                anim.SetBool("Jump", true);
-            }
-
-            if (currentExp >= maxExp)
-            {
-                LevelUp();
-            }
-        }
-        /// <summary>
-        /// -----------------------무적/데미지관련----------------------------
-        /// <summary>
-        ///  무적 판정 처리 
-        /// </summary>
-        /// <param name="targetPos"></param>
-        void OnDamaged(Vector2 targetPos)
-        {
-            //HP -= enemy.EnemyAttack();
-
-            OnInvincibleMode();
-            int dirc = transform.position.x - targetPos.x > 0 ? 1 : 0;
-            rigid.AddForce(new Vector2(dirc, 1), ForceMode2D.Impulse);
-        }
-
-        public void OnInvincibleMode()
-        {   //무적 처리 코드 
-            gameObject.layer = 9;
-            spriteRenderer.color = new Color(1, 1, 1, 0.1f);
-            Invoke("OffDamaged", 3);
-        }
-
-        void OffDamaged()
-        {
-            gameObject.layer = 7;
-            spriteRenderer.color = new Color(1, 1, 1, 10);
-        }
+    void OffDamaged()
+    {
+        gameObject.layer = 7;
+        spriteRenderer.color = new Color(1, 1, 1, 10);
+    }
 
     protected int Level;
 
@@ -312,7 +281,6 @@ public class Player : StateBase
         {
             currentHp = value;
             onHPChange?.Invoke(currentHp);
-            //Debug.Log($"현재 HP:{currentHp}");
         }
     }
 
@@ -389,25 +357,5 @@ public class Player : StateBase
     protected void OnDamage()
     {
 
-    }
-
-    /* private void OnRidePlatform(Vector2 delta)
-     {
-         //Debug.Log($"Player delta : {delta}");
-         //rigid.velocity = Vector2.zero;
-         rigid.MovePosition(rigid.position + delta);
-     }*/
-
-    public Action onCheckLocation;
-    IEnumerator CheckLocation()
-    {
-        while (true)
-        {
-
-            Debug.Log($" Player location Start : {transform.position}");
-            onCheckLocation?.Invoke();
-            yield return new WaitForSeconds(1.0f);
-            Debug.Log($"Player location End : {transform.position}");
-        }
     }
 }

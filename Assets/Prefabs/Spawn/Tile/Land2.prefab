@@ -11,7 +11,7 @@ GameObject:
   - component: {fileID: 5402212532817022731}
   - component: {fileID: 7172846540560637521}
   - component: {fileID: 1699687094600100243}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: greenland3 (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -568,7 +568,7 @@ GameObject:
   - component: {fileID: 7474754510009825785}
   - component: {fileID: 5676853156267108515}
   - component: {fileID: 8339784059092391997}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: greenland3
   m_TagString: Untagged
   m_Icon: {fileID: 0}

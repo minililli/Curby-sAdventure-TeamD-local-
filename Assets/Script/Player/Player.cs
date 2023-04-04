@@ -19,9 +19,9 @@ public class Player : StateBase
     //Animator animSkill2;
     Rigidbody2D rigid;
     //EnemyBase enemy;
-    // -------------------------------------연주수정중
-    bool onLand = false;
+    // -------------------------------------연주 수정
     bool canFallDown=false;
+    float dirY;
     CapsuleCollider2D playercollider;
     //-----------------------------------------
     Vector3 inputDir;
@@ -49,6 +49,7 @@ public class Player : StateBase
         rigid = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
         landbase = FindObjectOfType<LandBase>();
+        playercollider = GetComponent<CapsuleCollider2D>();
         InitStat();
 
         //enemy = FindObjectOfType<EnemyBase>(); // 적 찾아오기 
@@ -87,6 +88,7 @@ public class Player : StateBase
 
         inputDir = dir;
         playerH = dir.x;
+        dirY = dir.y;
         
         if (playerH > 0)                                            // 마지막 키 입력 방향 확인용 
         {
@@ -154,7 +156,7 @@ public class Player : StateBase
             }
         }
         // ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
-        if(canFallDown &&  inputDir.y < 0 ) // && 스페이스바눌를때)
+        if(canFallDown &&  dirY < 0 ) // && 스페이스바눌를때)
         {
             OnFallDown();
         }
@@ -172,13 +174,14 @@ public class Player : StateBase
             }
             else if (collision.gameObject.CompareTag("Platform"))    //부딪힌 태그가 Platform이면
             {
-                if (onLand)
+                if (collision.gameObject.GetComponent<LandBase>())
                 {
-                
+                    
                     canFallDown = true;
                 }
                 else
                 {
+                    
                     canFallDown = false;
                 }
                 
@@ -209,8 +212,10 @@ public class Player : StateBase
     IEnumerator Falling()
     {
         playercollider.enabled = false;
+        Debug.Log("collider.enabled = false");
         yield return new WaitForSeconds(0.1f);
         playercollider.enabled = true;
+        canFallDown= false;
     }
     //ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
 

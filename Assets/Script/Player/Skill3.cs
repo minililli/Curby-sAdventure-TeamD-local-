@@ -19,37 +19,50 @@ public class Skill3 : PoolObject
     /// </summary>
     
     public float skillSpeed = 1.0f;
-    
-    bool isFire = false;
+    public float skillCoolTime = 1.0f;
+    public int skillComboMax = 3;
+    private int skillCombo;
+    public int SkillCombo
+    {
+        get
+        {
+            return skillCombo;
+        }
+        set
+        {
+            skillCombo = Mathf.Clamp(value, 0, skillComboMax);
+        }
+    }
+    bool isOnSkill = false;
 
     /// <summary>
     /// 발사할 총알 프리팹
     /// </summary>
     public GameObject bullet;
 
-    /// <summary>
-    /// 총알 발사 시간 간격
-    /// </summary>
-    public float skillInterval;
-
-    /// <summary>
-    /// 총알을 계속 발사하는 코루틴
-    /// </summary>
-    IEnumerator skillCoroutine;
-
-    public bool isLeft = false;
+    private bool isLeft = false;
+    public bool IsLeft
+    {
+        get
+        {
+            return isLeft;
+        }
+        set
+        {
+            isLeft = value;
+        }
+    }
 
     private void Awake()
     {
         inputActions = new PlayerInputAction();
         anim_Skill = GetComponent<Animator>();
-        tran_Skill = GetComponent<Transform>();
-        skillCoroutine = SkillCoroutine();
+        tran_Skill = GetComponent<Transform>();        
     }
 
     void Start()
     {
-        
+        SkillCombo = 0;
     }
 
     private void OnEnable()
@@ -57,20 +70,17 @@ public class Skill3 : PoolObject
         inputActions.Player.Enable();
         inputActions.Player.Move.performed += OnMoveInput;
         inputActions.Player.Move.canceled += OnMoveInput;
-        inputActions.Player.Attack3.performed += OnSkill3;
-        inputActions.Player.Attack3.canceled += OffSkill3;
+        inputActions.Player.Attack3.performed += OnSkill3;     
     }
 
     protected override void OnDisable()
-    {
-        inputActions.Player.Attack3.canceled -= OffSkill3;
+    {     
         inputActions.Player.Attack3.performed -= OnSkill3;
         inputActions.Player.Move.canceled -= OnMoveInput;
         inputActions.Player.Move.performed -= OnMoveInput;
         inputActions.Player.Disable();
         
         base.OnDisable();
-
     }
 
     private void OnMoveInput(InputAction.CallbackContext context)
@@ -90,37 +100,27 @@ public class Skill3 : PoolObject
 
     public void OnSkill3(InputAction.CallbackContext context)   // 키보드 A키
     {
-        GameObject obj = Factory.Inst.GetObject(PoolObjectType.Bullet); //풀에서 Bullet빼서쓰는걸로 변경함
-        float posX = tran_Skill.position.x;
-        float posY = tran_Skill.position.y;
-        if(isLeft)
+        if (!isOnSkill)
         {
-            obj.transform.position = new Vector2(posX - 1, posY) * skillSpeed;
+            StartCoroutine(IEOnSkill());
         }
-        else
-        {
-            obj.transform.position = new Vector2(posX + 1, posY) * skillSpeed;
-        }
-        
     }
 
-    /// <summary>
-    /// 주기적으로 총알을 발사하는 코루틴
-    /// </summary>
-    /// <returns></returns>
-    IEnumerator SkillCoroutine()
+    IEnumerator IEOnSkill()
     {
-        while (true)
+        SkillCombo++;
+        
+        isOnSkill = true;
+        OnFire();
+        if (SkillCombo == skillComboMax)
         {
-            if(!isFire)
-            {
-                OnFire();
-                isFire = true;
-            }
-            
-            yield return new WaitForSeconds(skillInterval);
-            isFire = false;
+            yield return new WaitForSeconds(skillCoolTime);
+            StopCoroutine(IEOnSkill());
+            SkillCombo = 0;
+        
         }
+        isOnSkill = false;
+        
     }
 
     /// <summary>
@@ -128,7 +128,7 @@ public class Skill3 : PoolObject
     /// </summary>
     protected virtual void OnFire()
     {
-        GameObject obj = Factory.Inst.GetObject(PoolObjectType.Bullet);
+        GameObject obj = Factory.Inst.GetObject(PoolObjectType.Bullet); //풀에서 Bullet빼서쓰는걸로 변경함
         float posX = tran_Skill.position.x;
         float posY = tran_Skill.position.y;
         if (isLeft)
@@ -138,16 +138,8 @@ public class Skill3 : PoolObject
         else
         {
             obj.transform.position = new Vector2(posX + 1, posY);
-        }        
-    }
+        }
+    }   
 
-    //public void OnSkill3(InputAction.CallbackContext context)   // 키보드 D
-    //{
-    //    StartCoroutine(skillCoroutine);        
-    //}
-
-    public void OffSkill3(InputAction.CallbackContext context)   // 키보드 D
-    {
-        StopCoroutine(skillCoroutine);     
-    }
+    
 }

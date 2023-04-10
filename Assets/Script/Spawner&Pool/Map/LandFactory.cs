@@ -8,14 +8,16 @@ public enum TrackType
     Land1 = 0,
     Land2,
     Land3,
-    Land4
+    Land4,
+    Land5
 }
 public class LandFactory : Singleton<LandFactory>
 {
     Land1Pool land1pool;
     Land2Pool land2pool;
     Land3Pool land3pool;
-    Land4Pool land4pool; 
+    Land4Pool land4pool;
+    Land5Pool land5pool;
 
     protected override void PreInitialize()
     {
@@ -23,6 +25,7 @@ public class LandFactory : Singleton<LandFactory>
         land2pool = GetComponentInChildren<Land2Pool>();
         land3pool = GetComponentInChildren<Land3Pool>();
         land4pool = GetComponentInChildren<Land4Pool>();
+        land5pool = GetComponentInChildren<Land5Pool>();
        
     }
 
@@ -32,6 +35,7 @@ public class LandFactory : Singleton<LandFactory>
         land2pool?.Initialize();
         land3pool?.Initialize();
         land4pool?.Initialize();
+        land5pool?.Initialize();
        
     }
 
@@ -52,6 +56,9 @@ public class LandFactory : Singleton<LandFactory>
             case TrackType.Land4:
                 result = GetLand4().gameObject;
                 break;
+            case TrackType.Land5:
+                result = GetLand5().gameObject;
+                break;
         }
         return result;
     }
@@ -61,5 +68,6 @@ public class LandFactory : Singleton<LandFactory>
     public Land2 GetLand2() => land2pool?.GetObject();
     public Land3 GetLand3() => land3pool?.GetObject();
     public Land4 GetLand4() => land4pool?.GetObject();
+    public Land5 GetLand5() => land5pool?.GetObject();
 
 }

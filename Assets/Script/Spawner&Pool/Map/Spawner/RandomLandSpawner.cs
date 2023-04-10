@@ -1,10 +1,13 @@
 using System;
 using System.Collections;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class RandomLandSpawner : LandSpawner
 {
-    
+
+    PlatformKillzone killerzone;
+
     protected override IEnumerator Spawn()
     {
         //Debug.Log(transform.position);
@@ -14,11 +17,21 @@ public class RandomLandSpawner : LandSpawner
             yield return new WaitForSeconds(interval);
 
             GameObject obj = LandFactory.Inst.GetObject(RandomLandPool.TrackPicker()) ;   // 랜덤오브젝트 스포너위치에서 생성              
-            obj.transform.position = transform.position;  // 스포너 위치로 이동
-            float r = UnityEngine.Random.Range(minY, maxY);
-            obj.transform.Translate(Vector3.up * r);
+            OnSpawn(obj);
         }
     }
+
+    protected override void OnSpawn(GameObject obj)
+    {
+        base.OnSpawn(obj);
+        
+    }
+      void SetStop()
+    {
+
+    }
+
+
     private void OnDrawGizmos()
     {
         //스폰위치 확인용

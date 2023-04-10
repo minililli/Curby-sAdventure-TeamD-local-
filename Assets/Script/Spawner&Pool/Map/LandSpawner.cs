@@ -1,7 +1,6 @@
 using System;
 using System.Collections;
 using UnityEngine;
-using static UnityEngine.EventSystems.EventTrigger;
 
 public class LandSpawner : MonoBehaviour 
 {
@@ -42,7 +41,7 @@ public class LandSpawner : MonoBehaviour
     /// 스폰하는 위치 변경시 사용할 함수
     /// </summary>
     /// <param name="type"></param>
-    protected virtual void OnSpawn(GameObject obj)
+    protected virtual void OnSpawn(GameObject obj) 
     {
         float r = UnityEngine.Random.Range(minY, maxY);
         obj.transform.Translate(Vector3.up * r);      // 랜덤하게 높이 적용하기

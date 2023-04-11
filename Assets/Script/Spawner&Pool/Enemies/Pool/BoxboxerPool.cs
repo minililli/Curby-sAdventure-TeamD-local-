@@ -2,6 +2,6 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class EnemyPool : ObjectPool<Enemy_Boxboxer>
+public class BoxboxerPool : ObjectPool<Enemy_Boxboxer>
 {
 }

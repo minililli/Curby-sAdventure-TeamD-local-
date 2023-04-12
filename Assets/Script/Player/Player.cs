@@ -1,24 +1,19 @@
 using System;
 using System.Collections;
-using System.Collections.Generic;
-using TreeEditor;
-using Unity.VisualScripting;
-using UnityEditor;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
-using static UnityEngine.EventSystems.EventTrigger;
 
 public class Player : StateBase
 {
     SpriteRenderer spriteRenderer;
     PlayerInputAction inputActions;
-    Animator anim;
-    //Animator animSkill1;
-    //Animator animSkill2;
+    Animator anim;    
     Rigidbody2D rigid;
 
-    Enemy_Boxboxer enemy;
+    Enemy_Batafire enemy_Batafire;
+    Enemy_Boxboxer enemy_Boxboxer;
+    Enemy_Boxy enemy_Boxy;
 
     Pause pause;
 
@@ -27,11 +22,11 @@ public class Player : StateBase
     public Vector2 inputVec;
     protected bool isLeft = false;            //마지막 키 입력 방향 확인용
 
-    // -------------------------------------연주 수정
-    bool canFallDown = false;
-    float dirY;
-    CapsuleCollider2D playercollider;
-    //-----------------------------------------
+
+    bool canFallDown = false;               //플라잉플랫폼 여부. 맞으면 true, 틀리면 false
+    float dirY;                             //플레이어 아랫키 입력여부 확인용 변수
+    CapsuleCollider2D playercollider;       //플레이어 콜라이더 
+
 
     float playerH;                          //키 입력 방향 우측:1, 좌측 :-1
     [Header("스킬관련-------------------------------------")]
@@ -45,6 +40,8 @@ public class Player : StateBase
     public float JumpPower = 10.0f;
     public float jumpCount;
 
+    float enemyattack;
+
     //---------------------------------------------------------------------------------------------------
 
     private void Awake()
@@ -55,8 +52,6 @@ public class Player : StateBase
         anim = GetComponent<Animator>();
         playercollider = GetComponent<CapsuleCollider2D>();
         InitStat();
-
-        enemy = FindObjectOfType<Enemy_Boxboxer>(); // 적 찾아오기
 
         pause = FindObjectOfType<Pause>();
     }
@@ -182,38 +177,31 @@ public class Player : StateBase
     }
     //ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
 
+    
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (HP > 0)
+        if (collision.gameObject.layer == 6)                                    // 플레이어가 적과 충돌 시 
         {
-            if (collision.gameObject.CompareTag("Enemy") || collision.gameObject.CompareTag("EnemyAttack"))         // Enemy와 충돌시 HP 감소
-            {
-                OnDamaged(collision.transform.position);   // 무적
-            }
-            else if (collision.gameObject.CompareTag("Platform"))    //부딪힌 태그가 Platform이면
-            {
-                if (collision.gameObject.GetComponent<LandBase>() != null ) //LandBase를 가졌다면,
-                {
-                    canFallDown = true;
-                    //Debug.Log("canFallDown(true)");
-                }
-                else
-                {
-                    canFallDown = false;
-                    //Debug.Log("canFallDown(false)");
-                }
-                canFallDown = false;
-                jumpCount = 0;
-
-            }
+            OnDamaged(collision.transform.position);                            // 무적
         }        
-        else if (HP < 0)// player 사망처리
+        else if (collision.gameObject.CompareTag("Platform"))                   //부딪힌 태그가 Platform이면
         {
-            isPlayerDead = true;
-            PlayerDie();
-        }
+            if (collision.gameObject.GetComponent<LandBase>() != null )         //LandBase를 가졌다면,
+            {
+                canFallDown = true;
+                //Debug.Log("canFallDown(true)");
+            }
+            else
+            {
+                canFallDown = false;
+                //Debug.Log("canFallDown(false)");
+            }
+            canFallDown = false;
+            jumpCount = 0;
+        }        
     }
+
     private void OnCollisionExit2D(Collision2D collision)
     {
         if (collision.gameObject.GetComponent<LandBase>() != null)
@@ -221,6 +209,30 @@ public class Player : StateBase
             canFallDown = false;
           
         }
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.CompareTag("EnemyAttack"))                 // 플레이어가 적에게 공격 당할 시 
+        {            
+            if (collision.transform.parent.CompareTag("Enemy_BoxBoxer"))              // 적이 무엇인지 태그로 확인하여 해당 스크립트의 공격력을 enemyattack에 대입 
+            {                
+                enemy_Boxboxer = collision.transform.GetComponentInParent<Enemy_Boxboxer>();
+                enemyattack = enemy_Boxboxer.attackPoint;
+            }
+            if (collision.transform.parent.CompareTag("Enemy_Batafire"))              // 적이 무엇인지 태그로 확인하여 해당 스크립트의 공격력을 enemyattack에 대입 
+            {
+                enemy_Batafire = collision.transform.GetComponentInParent<Enemy_Batafire>();
+                enemyattack = enemy_Batafire.attackPoint;
+            }
+            if (collision.transform.parent.CompareTag("Enemy_Boxy"))              // 적이 무엇인지 태그로 확인하여 해당 스크립트의 공격력을 enemyattack에 대입 
+            {
+                enemy_Boxy = collision.transform.GetComponentInParent<Enemy_Boxy>();
+                enemyattack = enemy_Boxy.attackPoint;
+            }
+            OnDamage(enemyattack);                                              // 대미지 처리 함수 
+        }
+
     }
 
     private void Update()
@@ -263,11 +275,11 @@ public class Player : StateBase
     /// <param name="targetPos">충돌 체크시 위치</param>
     void OnDamaged(Vector2 targetPos)
     {
-        //HP -= enemy.EnemyAttack();
+        HP -= 1.0f;
         
         OnInvincibleMode();
-        float dirc = transform.position.x - targetPos.x > 0 ? 0 : 1;        
-        rigid.AddForce(new Vector2(dirc,1) * 20, ForceMode2D.Impulse);
+        float dirc = transform.position.x - targetPos.x > 0 ? 1 : 0;        
+        rigid.AddForce(new Vector2(dirc,1) * 10, ForceMode2D.Impulse);
     }
 
     public void OnInvincibleMode()
@@ -275,7 +287,7 @@ public class Player : StateBase
 
         gameObject.layer = 9;
         spriteRenderer.color = new Color(1, 1, 1, 0.1f);
-        Invoke("OffDamaged", 3);
+        Invoke("OffDamaged", 1);
     }
     
     void OffDamaged()
@@ -324,7 +336,7 @@ public class Player : StateBase
 
     //-----------------------------------------------------------------------------------------------------------
     // ----------- delegate-----------
-    Action<float> onHPChange;
+    public Action<float> onHPChange;
     // ---------------------------------
 
    
@@ -372,13 +384,26 @@ public class Player : StateBase
         if (!isPlayerDead)
         {
             EXP = EXP - 50;   // player 사망시 경험치 감소
-            gameObject.SetActive(false);
+            pause.OnPause();
         }
     }
 
-    protected void OnDamage()
+    protected void OnDamage(float enemyattack)
     {
         
+        if (HP > 0)
+        {
+            float damage = enemyattack - (defencePoint * 0.3f);                 //데미지 = 적 공격력 - 방어점수의30%                        
+            HP -= (damage > 0) ? damage : 1.0f;                          //데미지 최소값 확보
+            Debug.Log($"Player HP : {HP} : {damage} = {enemyattack} - {defencePoint} * 0.3f ");
+        }
+        else if (HP < 0)
+        {
+            isPlayerDead = true;
+            PlayerDie();
+        }
+
+
     }
 
 

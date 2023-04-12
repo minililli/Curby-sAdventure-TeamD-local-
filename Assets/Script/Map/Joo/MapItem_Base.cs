@@ -16,6 +16,7 @@ public class MapItem_Base : MonoBehaviour
         {
             player = collision.gameObject.GetComponent<Player>();
             this.gameObject.SetActive(false);
+
         }
     }
 

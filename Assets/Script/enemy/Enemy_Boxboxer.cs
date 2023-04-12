@@ -16,7 +16,8 @@ public class Enemy_Boxboxer : PoolObject
     SpriteRenderer spri_Enemy;
     Animator anim_Enemy;
 
-    Collider2D coll_Enemy_PlayerChecker;        
+    Collider2D coll_Enemy_PlayerChecker;
+    Collider2D coll_Enemy_Attack;
 
     Transform tran_Target;
     //Rigidbody2D rigi_Target;
@@ -88,6 +89,8 @@ public class Enemy_Boxboxer : PoolObject
     /// </summary>
     bool isAttack = false;
 
+    bool isEnable = false;
+
     /// <summary>
     /// 데미지 계산용 player SkillPoint
     /// </summary>
@@ -102,6 +105,8 @@ public class Enemy_Boxboxer : PoolObject
     /// enemy hp 바(UI)
     /// </summary>
     public TMP_Text EnemyHpText;
+
+    
 
     /// <summary>
     /// 스텟 초기화용
@@ -127,6 +132,8 @@ public class Enemy_Boxboxer : PoolObject
         player = FindObjectOfType<Player>();
 
         coll_Enemy_PlayerChecker = GetComponentInChildren<CircleCollider2D>();
+        coll_Enemy_Attack = tran_Enemy.GetChild(2).GetComponent<Collider2D>();
+
     }
 
     private void OnEnable()
@@ -136,7 +143,8 @@ public class Enemy_Boxboxer : PoolObject
         isLive = true;
         currentHP = maxHp;
         tran_Target = null;
-        StartCoroutine(IEMove());
+        isEnable = true;
+        //StartCoroutine(IEMove());
     }
 
     void Start()
@@ -146,7 +154,7 @@ public class Enemy_Boxboxer : PoolObject
 
     protected virtual void FixedUpdate()
     {
-        if(tran_Target != null && isLive)                                       //살아 있고 coll_Enemy_PlayerChecker의 트리거 안에 들어온 적이 있으면 
+        if(tran_Target != null && isLive && !isAttack)                                       //살아 있고 coll_Enemy_PlayerChecker의 트리거 안에 들어온 적이 있으면 
         {
             dirVec = tran_Target.position - tran_Enemy.position;                //타겟을 보는 방향을 구하여 
             spri_Enemy.flipX = (dirVec.x > 0) ? true : false;                   //스프라이트 플립으로 방향 전환             
@@ -157,10 +165,19 @@ public class Enemy_Boxboxer : PoolObject
                 rigi_Enemy.MovePosition(rigi_Enemy.position + nextVec);         //내위치에서 가야할 방향 속도로 이동 
             }         
         }
+        else if(isEnable)
+        {
+            float forceRange;
+            forceRange = UnityEngine.Random.Range(600.0f, 1400.0f);
+            
+            rigi_Enemy.AddForce(new Vector2(-1, 1) * forceRange, ForceMode2D.Force);
+            isEnable = false;
+        }
     }
-
+    
     void Update()
     {
+        
         
     }
 
@@ -189,6 +206,7 @@ public class Enemy_Boxboxer : PoolObject
             tran_Target = obj.transform;                                        //타겟으로 설정                                         
             anim_Enemy.SetBool("isWalk", true);                                 //걷는 에니메이션 참으로 변경
         }
+        isAttack = false;
     }
 
     private void OnTriggerStay2D(Collider2D collision)
@@ -196,13 +214,16 @@ public class Enemy_Boxboxer : PoolObject
         isHit = false;
         if (collision.gameObject.layer == 7)                                    //player layer가 triger에 머물 시  
         {
+            obj = collision.gameObject;
+            tran_Target = obj.transform;                                        //타겟으로 설정                                         
             dirVec = tran_Target.position - tran_Enemy.position;                //타겟과의 거리를 구하여 
             if (dirVec.x < skill_Range && !isAttack)                            //기준 거리보다 가깝고 공격중이 아니면  
             {                
                 anim_Enemy.SetTrigger("Attack_Skill1");                         //공격 에니메이션 트리거 발동
-                                                                                //추후 랜덤함수 로 스킬 랜덤하게 나가게 구현
+                isAttack = true;                                                                //추후 랜덤함수 로 스킬 랜덤하게 나가게 구현                
             }
         }
+        isAttack = false;
     }
 
     private void OnTriggerExit2D(Collider2D collision)
@@ -213,6 +234,7 @@ public class Enemy_Boxboxer : PoolObject
             tran_Target = null;                                                 //타겟을 null로 변경
             anim_Enemy.SetBool("isWalk", false);                                //걷는 애니메이션 거짓으로 변경 
         }
+        isAttack = false;
     }
 
     void OnCollisionEnter2D(Collision2D collision)
@@ -279,7 +301,7 @@ public class Enemy_Boxboxer : PoolObject
         isLive = false;
         gameObject.SetActive(false);                                            // Enemy 비활성화
         
-        //player.AddExp((int)exp);                                              // player에 exp 추가
+        player.AddExp((int)exp);                                              // player에 exp 추가
     }
 
     public float GetEnemyHP()
@@ -287,7 +309,7 @@ public class Enemy_Boxboxer : PoolObject
         return currentHP;
     }
 
-    IEnumerator IEMove()
+    /*IEnumerator IEMove()
     {
         float time = 0f;
         if(spawner != null)
@@ -302,6 +324,6 @@ public class Enemy_Boxboxer : PoolObject
             }
             
         }
-    }
+    }*/
 
 }

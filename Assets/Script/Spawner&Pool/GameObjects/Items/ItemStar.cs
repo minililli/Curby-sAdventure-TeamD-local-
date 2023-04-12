@@ -7,7 +7,7 @@ public class ItemStar : ItemBase
 {
     public int Score = 10;
     public int Exp = 20;
-    public float invincibleTime = 3;
+
 
     protected override void OnEnable()
     {
@@ -19,9 +19,11 @@ public class ItemStar : ItemBase
     {
         if (collision.CompareTag("Player"))
         {
+            if(player != null)
+            {
             player.OnInvincibleMode();
-
             base.OnTriggerEnter2D(collision);
+            }
         }
     }
 

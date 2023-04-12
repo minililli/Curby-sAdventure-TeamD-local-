@@ -5,7 +5,7 @@ using UnityEngine;
 public class LandSpawner : MonoBehaviour 
 {
     protected Player player;
-    public TrackType objType;
+    public LandType objType;
     /// <summary>
     /// 스폰간격
     /// </summary>
@@ -13,9 +13,9 @@ public class LandSpawner : MonoBehaviour
     /// <summary>
     /// 스폰되는 위치
     /// </summary>
-    public float minY = -2.2f;
+    public float minY = -2.0f;
     public float maxY = 2.5f;
-    
+
     //스폰지점 확인용 변수 where(Gizmos)
     Vector3 where;
 
@@ -43,8 +43,9 @@ public class LandSpawner : MonoBehaviour
     /// <param name="type"></param>
     protected virtual void OnSpawn(GameObject obj) 
     {
+        obj.transform.position = transform.position;
         float r = UnityEngine.Random.Range(minY, maxY);
-        obj.transform.Translate(Vector3.up * r);      // 랜덤하게 높이 적용하기
+        obj.transform.Translate(Vector2.up * r);      // 랜덤하게 높이 적용하기
         where = obj.transform.position;                       //스폰지점 확인용 (Gizmos)
     }
 

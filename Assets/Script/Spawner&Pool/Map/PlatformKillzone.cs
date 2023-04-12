@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
-using UnityEngine.Device;
 
 public class PlatformKillzone : MonoBehaviour
 {
@@ -19,21 +18,31 @@ public class PlatformKillzone : MonoBehaviour
     }
     private void OnTriggerEnter2D(Collider2D collision)
     {
+     
         if (collision.gameObject.CompareTag("Platform") && collision.gameObject.GetComponent<LandBase>() != null)
         {
-            collision.gameObject.SetActive(false);        
+            collision.gameObject.SetActive(false);
             platformCount++;
             Debug.Log(platformCount);
             onPlatformCountChanged?.Invoke(platformCount);
 
         }
+        else if (!collision.gameObject.transform.CompareTag("Platform") && !collision.gameObject.CompareTag("Enemy"))
+        {
+            collision.gameObject.SetActive(false);
+        }
+
         if (platformCount == platformCountEnd)
         {
-            Debug.Log("Stage End");
-            EditorApplication.isPaused = true;
-            onStageEnd?.Invoke();
+            StageEnd();
         }
+
     }
 
-  
+    public void StageEnd()
+    {
+        Debug.Log("Stage End");
+        EditorApplication.isPaused = true;
+        onStageEnd?.Invoke();
+    }
 }

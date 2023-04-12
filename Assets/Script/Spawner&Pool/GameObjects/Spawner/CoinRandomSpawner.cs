@@ -7,7 +7,7 @@ public class CoinRandomSpawner : Spawner
 { 
     private void OnEnable()
     {
-        interval = 0.5f;
+        interval = 1f;
     }
     protected override IEnumerator Spawn()
     {
@@ -17,9 +17,14 @@ public class CoinRandomSpawner : Spawner
         {
             yield return new WaitForSeconds(interval);
             GameObject obj = Factory.Inst.GetObject(RandomCoinPool.RandomCoin());   // 오브젝트 스포너위치에서 생성                                           //Debug.Log(obj.transform.position);
+            if(obj != null)
+            {
+
             obj.transform.position = transform.position;  // 스포너 위치로 이동
             float r = UnityEngine.Random.Range(minY, maxY);
             obj.transform.Translate(Vector3.up * r);
+
+            }
         }
     }
 

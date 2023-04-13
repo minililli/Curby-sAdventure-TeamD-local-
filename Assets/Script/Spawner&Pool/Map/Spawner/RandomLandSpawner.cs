@@ -1,39 +1,29 @@
 using System;
 using System.Collections;
+using Unity.VisualScripting;
 using UnityEngine;
-using Random = UnityEngine.Random;
 
 public class RandomLandSpawner : LandSpawner
 {
-
     protected override IEnumerator Spawn()
     {
         //Debug.Log(transform.position);
-
+        
         while (true)
         {
-            //killzone.onPlatformCountChanged += SpawnFinalPlatform;
             yield return new WaitForSeconds(interval);
 
-            GameObject obj = LandFactory.Inst.GetObject(RandomLandPool.LandPicker());   // 랜덤오브젝트 스포너위치에서 생성 
+            GameObject obj = LandFactory.Inst.GetObject(RandomLandPool.LandPicker()) ;   // 랜덤오브젝트 스포너위치에서 생성              
             OnSpawn(obj);
         }
     }
-    /*void SpawnFinalPlatform(int platformCount)
-    {
-        if (platformCount == killzone.platformCountEnd - 1)
-        {
-            StopCoroutine(Spawn());
-            Debug.Log("Stage End");
-        }
-        else { StartCoroutine(Spawn()); }
-    }*/
+
     protected override void OnSpawn(GameObject obj)
     {
         base.OnSpawn(obj);
-
+        
     }
-    void SetStop()
+      void SetStop()
     {
 
     }
@@ -42,11 +32,11 @@ public class RandomLandSpawner : LandSpawner
     private void OnDrawGizmos()
     {
         //스폰위치 확인용
-        Gizmos.color = Color.green;
-        Vector3 from = transform.position + Vector3.up * maxY;
-        Vector3 to = transform.position + Vector3.up * minY;
-        Gizmos.DrawLine(from, to);
-
+          Gizmos.color = Color.yellow;
+          Vector3 from = transform.position+ Vector3.up * maxY;
+          Vector3 to = transform.position+ Vector3.up * minY;
+          Gizmos.DrawLine(from, to);
+        
         ////스폰지점 확인용
         //Gizmos.color = Color.blue;
         //GameObject comp = FindObjectOfType<EnemyBase>().gameObject;

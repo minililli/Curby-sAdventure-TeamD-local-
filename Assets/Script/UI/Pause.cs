@@ -25,7 +25,6 @@ public class Pause : MonoBehaviour
 
     private void Start()
     {
-        isPause = false;
         canvas_Pause.SetActive(false);
     }
 

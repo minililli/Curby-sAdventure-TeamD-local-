@@ -4,26 +4,25 @@ using UnityEngine;
 
 public class TrapBase: MonoBehaviour
 {
+    float damage=2.0f;
+    protected float Damage
+    { get => damage;
+        set { damage = value; }
+    }
+    Player player;
 
-    public float slowTime;
-    WaitForSeconds slow;
-
-    public float damage=2.0f;          //TrapBase 기본 damage
-  
-    protected Player player;
-
-    protected virtual void Awake()
+    private void Awake()
     {
-        slow = new WaitForSeconds(slowTime);
         player = FindObjectOfType<Player>();
     }
-    protected virtual void Start()
+
+    protected virtual void OnEnable()
     {
+        Damage = damage ;
     }
 
     protected virtual void OnCollisionEnter2D(Collision2D collision)
     {
-            Debug.Log(damage);
         if (collision.gameObject.CompareTag("Player"))
         {
             Player obj = collision.gameObject.GetComponent<Player>();
@@ -33,11 +32,5 @@ public class TrapBase: MonoBehaviour
         }
     }
 
-    protected IEnumerator SlowDown()
-    {
-        player.MoveSpeed *= 0.5f;
-        yield return slowTime;
-        player.MoveSpeed *= 2.0f;
-    }
 
 }

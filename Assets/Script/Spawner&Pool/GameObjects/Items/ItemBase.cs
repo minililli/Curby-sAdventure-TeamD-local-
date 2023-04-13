@@ -2,14 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SocialPlatforms.Impl;
-using UnityEngine.UIElements;
 
 public class ItemBase : PoolObject 
 {
 
     Animator anim;
-    [Range(0f,10f)]
-    public float moveSpeed = 4.0f;
+    float moveSpeed = 4;
 
 
     int itemscore;  //점수
@@ -50,9 +48,6 @@ public class ItemBase : PoolObject
     {
         transform.Translate(Time.deltaTime * Vector2.left * moveSpeed);
     }
-
-
-
     protected virtual void OnTriggerEnter2D(Collider2D collision)
     {
         if(collision.CompareTag("Player"))

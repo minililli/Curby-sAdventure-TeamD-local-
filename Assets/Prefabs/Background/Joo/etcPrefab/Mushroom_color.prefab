@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 6075098654581703419}
   m_Layer: 0
   m_Name: Mushroom_color
-  m_TagString: Item
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -114,5 +114,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e9b76e8ca5d20c2459f7cefe30ec2e07, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  HPheal: 30
+  score: 5
   exp: 3

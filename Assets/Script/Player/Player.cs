@@ -22,11 +22,11 @@ public class Player : StateBase
     public Vector2 inputVec;
     protected bool isLeft = false;            //마지막 키 입력 방향 확인용
 
-
-    bool canFallDown = false;               //플라잉플랫폼 여부. 맞으면 true, 틀리면 false
-    float dirY;                             //플레이어 아랫키 입력여부 확인용 변수
-    CapsuleCollider2D playercollider;       //플레이어 콜라이더 
-
+    // -------------------------------------연주 수정
+    bool canFallDown = false;
+    float dirY;
+    CapsuleCollider2D playercollider;
+    //-----------------------------------------
 
     float playerH;                          //키 입력 방향 우측:1, 좌측 :-1
     [Header("스킬관련-------------------------------------")]
@@ -52,6 +52,8 @@ public class Player : StateBase
         anim = GetComponent<Animator>();
         playercollider = GetComponent<CapsuleCollider2D>();
         InitStat();
+
+        
 
         pause = FindObjectOfType<Pause>();
     }
@@ -336,7 +338,7 @@ public class Player : StateBase
 
     //-----------------------------------------------------------------------------------------------------------
     // ----------- delegate-----------
-    public Action<float> onHPChange;
+    Action<float> onHPChange;
     // ---------------------------------
 
    

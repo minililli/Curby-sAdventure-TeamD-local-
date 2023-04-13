@@ -25,10 +25,7 @@ public class Skill3 : PoolObject
     private float skillCoolTime = 0;
     public float SkillCoolTime
     {
-        get
-        {
-            return skillCoolTime;
-        }
+        get => skillCoolTime;        
         set
         {
             skillCoolTime = value;
@@ -41,10 +38,7 @@ public class Skill3 : PoolObject
     private int skillCombo;
     public int SkillCombo
     {
-        get
-        {
-            return skillCombo;
-        }
+        get => skillCombo;        
         set
         {
             skillCombo = Mathf.Clamp(value, 0, skillComboMax);
@@ -63,10 +57,7 @@ public class Skill3 : PoolObject
     private bool isLeft = false;
     public bool IsLeft
     {
-        get
-        {
-            return isLeft;
-        }
+        get => isLeft;        
         set
         {
             isLeft = value;
@@ -116,11 +107,13 @@ public class Skill3 : PoolObject
         {
             isLeft = true;
         }
+
+
     }
 
     public void OnSkill3(InputAction.CallbackContext context)   // 키보드 A키
     {
-        if (!isOnSkill)
+        if (!isOnSkill && SkillCombo != 0)
         {
             StartCoroutine(IEOnSkill());
         }
@@ -142,9 +135,9 @@ public class Skill3 : PoolObject
         if (SkillCombo == 0)
         {
             yield return new WaitForSeconds(skillCoolTimeMAx);
-            StopCoroutine(IEOnSkill());
             SkillCombo = skillComboMax;
             SkillCoolTime = 0;
+            StopCoroutine(IEOnSkill());
         }
         isOnSkill = false;
 

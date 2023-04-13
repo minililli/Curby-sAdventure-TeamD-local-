@@ -1,7 +1,6 @@
 using System;
 using System.Collections;
 using UnityEngine;
-using Random = UnityEngine.Random;
 
 public class Coin1Spawner : Spawner
 {
@@ -18,9 +17,9 @@ public class Coin1Spawner : Spawner
             yield return new WaitForSeconds(interval);
 
             GameObject obj = Factory.Inst.GetObject(PoolObjectType.CoinCopper);   // 오브젝트 스포너위치에서 생성              
-            obj.transform.position = transform.position;  // 스포너 위치
-            float r = Random.Range(minY, maxY);
-            obj.transform.Translate(Vector2.up * r);
+            obj.transform.position = transform.position;  // 스포너 위치로 이동
+            float r = UnityEngine.Random.Range(minY, maxY);
+            obj.transform.Translate(Vector3.up * r);
         }
     }
     private void OnDrawGizmos()

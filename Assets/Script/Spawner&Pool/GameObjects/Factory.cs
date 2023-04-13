@@ -49,6 +49,8 @@ public class Factory : Singleton<Factory>
         GameObject result = null;
         switch (type)
         {
+            case PoolObjectType.None:
+                break;
             case PoolObjectType.Bullet:
                 result = GetBullet().gameObject;
                 break;

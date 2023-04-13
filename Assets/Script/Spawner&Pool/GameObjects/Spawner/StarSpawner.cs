@@ -7,7 +7,7 @@ public class StarSpawner : Spawner
     // 소환정도
     private void OnEnable()
     {
-        interval = 15.0f;
+        interval = 4.0f;
     }
     protected override IEnumerator Spawn()
     {

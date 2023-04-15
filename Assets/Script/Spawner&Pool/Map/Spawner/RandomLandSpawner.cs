@@ -5,8 +5,23 @@ using UnityEngine;
 
 public class RandomLandSpawner : LandSpawner
 {
+    PlatformKillzone killzone;
+    int passedPlatform=0;
+    private void Start()
+    {
+        killzone = FindObjectOfType<PlatformKillzone>();
+        killzone.onPlatformCountChanged += CheckPlatform;
+    }
+
+    void CheckPlatform(int platform)
+    {
+        passedPlatform = platform;
+    }
+
+
     protected override IEnumerator Spawn()
     {
+        
         //Debug.Log(transform.position);
         
         while (true)
@@ -15,6 +30,11 @@ public class RandomLandSpawner : LandSpawner
 
             GameObject obj = LandFactory.Inst.GetObject(RandomLandPool.LandPicker()) ;   // 랜덤오브젝트 스포너위치에서 생성              
             OnSpawn(obj);
+
+            if (passedPlatform >= killzone.platformCountEnd)
+            {
+
+            }
         }
     }
 

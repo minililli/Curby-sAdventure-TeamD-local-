@@ -27,7 +27,7 @@ public class PlatformKillzone : MonoBehaviour
             onPlatformCountChanged?.Invoke(platformCount);
 
         }
-        else if (collision.gameObject.GetComponent<Bullet>() || collision.gameObject.GetComponent<CoinBase>() || collision.gameObject.GetComponent<TrapBase>())
+        else if (collision.gameObject.GetComponent<Bullet>() || collision.gameObject.GetComponent<CoinBase>() /*|| collision.gameObject.GetComponent<TrapBase>()*/)
         {
             collision.gameObject.SetActive(false);
         }

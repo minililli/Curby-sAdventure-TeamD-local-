@@ -7,10 +7,6 @@ public class Scroller_Ground1 : MonoBehaviour
     public float scrollingSpeed = 4.0f;  // 스크롤 이동 속도
 
     Transform[] bgSlots = null;  // 배경 이미지가 두개 붙어있는 슬롯의 집합
-    Transform[] mapSpawn1 = null;
-    Transform[] mapSpawn2 = null;
-    Transform mapItem1;
-    Transform mapItem2;
 
     float slot_Width = 21.70f;  // 그라운드 한변의 길이
 
@@ -22,20 +18,6 @@ public class Scroller_Ground1 : MonoBehaviour
             bgSlots[i] = transform.GetChild(i);         // 슬롯 하나씩 찾기
         }
         slot_Width = bgSlots[1].position.x - bgSlots[0].position.x;   // 이미지 한변의 길이 계산
-
-        mapItem1 = transform.GetChild(0).GetChild(0);
-        mapSpawn1 = new Transform[mapItem1.childCount];
-        for (int i = 0; i<mapItem1.childCount;i++)
-        {
-            mapSpawn1[i] = mapItem1.GetChild(i);
-        }
-
-        mapItem2 = transform.GetChild(1).GetChild(0);
-        mapSpawn2 = new Transform[mapItem2.childCount];
-        for (int i = 0; i < mapItem2.childCount; i++)
-        {
-            mapSpawn2[i] = mapItem2.GetChild(i);
-        }
     }
 
     private void Update()
@@ -55,25 +37,10 @@ public class Scroller_Ground1 : MonoBehaviour
 
     protected virtual void MoveRightEnd(int index)
     {
-        switch (index)
+        bgSlots[index].Translate(slot_Width * bgSlots.Length * transform.right);
+       for(int i =0; i< transform.childCount; i++)
         {
-            case 0:
-                {
-                    foreach (var item in mapSpawn1)
-                    {
-                        item.gameObject.SetActive(true);
-                    }
-                    break;
-                }
-            case 1:
-                {
-                    foreach (var item in mapSpawn2)
-                    {
-                        item.gameObject.SetActive(true);
-                    }
-                    break;
-                }
+            bgSlots[i].transform.GetChild(i).gameObject.SetActive(true);
         }
-                bgSlots[index].Translate(slot_Width * bgSlots.Length * transform.right);
     }
 }

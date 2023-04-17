@@ -38,9 +38,5 @@ public class Scroller_Background1 : MonoBehaviour
     protected virtual void MoveRightEnd(int index)
     {
         bgSlots[index].Translate(slot_Width * bgSlots.Length * transform.right);
-        for(int i=0; i < bgSlots[i].childCount;i ++)
-        {
-            bgSlots[i].GetChild(i).gameObject.SetActive(false);
-        }
     }
 }

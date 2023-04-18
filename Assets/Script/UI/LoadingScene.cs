@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.InputSystem.Interactions;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
 using Random = UnityEngine.Random;
@@ -36,6 +35,7 @@ public class LoadingScene : Singleton<LoadingScene>
         tipText = transform.GetChild(2).GetComponent<TextMeshProUGUI>();
         slider = transform.GetChild(3).GetComponent<Slider>();
         loadingText = transform.GetChild(4).GetComponent<TextMeshProUGUI>();
+        inputAction = new PlayerInputAction();
     }
     private void OnEnable()
     {
@@ -67,7 +67,7 @@ public class LoadingScene : Singleton<LoadingScene>
         string tip4 = "세상에서 가장 귀여운 커비는 아직 누구도 만나지 못했습니다.";
         tips = new string[] { tip1, tip2, tip3, tip4 };
 
-        tips = new string[4];
+        //tips = new string[4];
         //tips = { tip1, tip2, tip3, tip4};
         //tips[0] = tip1;
         //tips[1] = tip2;

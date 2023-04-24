@@ -9,7 +9,6 @@ public class ExitSign : PlatformKillzone
         if (collision.gameObject.CompareTag("Player"))
         {
             OnStageEnd();
-            onStageEnd?.Invoke();
         }
     }
 }

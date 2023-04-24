@@ -8,18 +8,14 @@ public class RandomLandSpawner : LandSpawner
     protected override IEnumerator Spawn()
     {
         //Debug.Log(transform.position);
-
-        while (spawnReady >= count)
+        while (true)
         {
+            
             yield return new WaitForSeconds(interval);
 
                 GameObject obj = LandFactory.Inst.GetObject(RandomLandPool.LandPicker());   // 랜덤오브젝트 스포너위치에서 생성              
                 OnSpawn(obj);
         }
-
-            SpawnExitPlatform();
-        //StopCoroutine(Spawn());
-
     }
 
      

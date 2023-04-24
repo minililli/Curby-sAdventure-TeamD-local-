@@ -24,15 +24,24 @@ public class LandSpawner : MonoBehaviour
     /// </summary>
     protected int count;
     /// <summary>
+    /// 게임종료전 D-플랫폼갯수 (exitplatform소환)
+    /// </summary>
+    protected int beforeCount;
+    /// <summary>
     /// Land5 스폰될 시점
     /// </summary>
     protected int spawnReady;
+
+    protected bool isReady = false;
+
     private void Start()
     {
         player = FindObjectOfType<Player>();
         killzone = GameObject.Find("PlatformKillZone").GetComponent<PlatformKillzone>();
+        
+        spawnReady = killzone.platformCountEnd - beforeCount;
+
         killzone.onPlatformCountChanged += (platform) => count = platform;
-        spawnReady = killzone.platformCountEnd - 4;
 
         StartCoroutine(Spawn());
     }
@@ -47,7 +56,6 @@ public class LandSpawner : MonoBehaviour
             // 상속 받은 클래스별 별도 처리
             OnSpawn(obj);
         }
-       
     }
 
     public void SpawnExitPlatform()
@@ -56,6 +64,7 @@ public class LandSpawner : MonoBehaviour
         exitPlatform.transform.position = transform.position;
         float r = UnityEngine.Random.value;
         exitPlatform.transform.Translate(Vector3.up * r);      // 랜덤하게 높이 적용하기
+        isReady = false;
     }
 
     /// <summary>

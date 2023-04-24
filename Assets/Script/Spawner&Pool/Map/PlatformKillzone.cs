@@ -38,11 +38,12 @@ public class PlatformKillzone : MonoBehaviour
        //게임 종료 조건 
         if (platformCount == platformCountEnd)
         {
-            onStageEnd();
+            OnStageEnd();
         }
     }
     public void OnStageEnd()
     {
+        StopAllCoroutines();
         Debug.Log("Stage End");
         EditorApplication.isPaused = true;          //플레이 일시정지됨
         onStageEnd?.Invoke();                       //끝났다고 알리는 델리게이트

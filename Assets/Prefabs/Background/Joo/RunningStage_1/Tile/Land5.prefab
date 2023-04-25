@@ -47,7 +47,7 @@ Rigidbody2D:
   m_GameObject: {fileID: 4716310732309764317}
   m_BodyType: 1
   m_Simulated: 1
-  m_UseFullKinematicContacts: 0
+  m_UseFullKinematicContacts: 1
   m_UseAutoMass: 0
   m_Mass: 1
   m_LinearDrag: 0
@@ -70,7 +70,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 694f000df365b644fad9a6f61847b0d2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  moveSpeed: 6
+  moveSpeed: 7
 --- !u!1001 &4716310731164547168
 PrefabInstance:
   m_ObjectHideFlags: 0

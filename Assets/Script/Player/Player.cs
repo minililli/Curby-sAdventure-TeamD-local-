@@ -1,6 +1,6 @@
 using System;
 using System.Collections;
-using Unity.VisualScripting;
+
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
@@ -8,6 +8,8 @@ using UnityEngine.UI;
 
 public class Player : StateBase
 {
+    UI_GameCounter gameCounter;         //gameCounter(3,2,1 카운트)
+
     SpriteRenderer spriteRenderer;
     PlayerInputAction inputActions;
     Animator anim;
@@ -25,6 +27,7 @@ public class Player : StateBase
     protected bool isLeft = false;            //마지막 키 입력 방향 확인용
 
     // -------------------------------------연주 수정
+    bool isStart = false;           //3,2,1 완료여부 :  true면 게임시작, false면 카운트중임
     bool canFallDown = false;
     float dirY;
     CapsuleCollider2D playercollider;
@@ -55,11 +58,24 @@ public class Player : StateBase
         playercollider = GetComponent<CapsuleCollider2D>();
         InitStat();
         pause = FindObjectOfType<Pause>();
+        gameCounter = FindObjectOfType<UI_GameCounter>();
     }
+
 
     private void Start()
     {
         moveSpeed = MoveSpeed;
+        if (SceneManager.GetActiveScene().name == "TEST_ALL(Scrolling)" || SceneManager.GetActiveScene().name == "Test_joo_map")
+        {
+            gameCounter.StartRun = () =>
+        {
+            isStart = true;
+            if (isStart)
+            {
+                isStart = true;
+            }
+        };
+        }
     }
 
     private void OnEnable()
@@ -67,7 +83,6 @@ public class Player : StateBase
         if (SceneManager.GetActiveScene().name == "TEST_ALL(Scrolling)" || SceneManager.GetActiveScene().name == "Test_joo_map")
         //if(SceneManager.GetActiveScene().buildIndex == 3)
         {
-
             RunningMapInputOnEnable();
         }
         else
@@ -76,7 +91,6 @@ public class Player : StateBase
             inputActions.Player.esc.performed += OnESC;
             inputActions.Player.Move.performed += OnMoveInput;
             inputActions.Player.Move.canceled += OnMoveInput;
-
         }
     }
 
@@ -213,7 +227,7 @@ public class Player : StateBase
                 canFallDown = false;
                 //Debug.Log("canFallDown(false)");
             }
-            
+
             jumpCount = 0;
         }
     }
@@ -262,25 +276,25 @@ public class Player : StateBase
                 anim.SetBool("Walking", true);
             }
         }
-            if (Input.GetButton("Horizontal"))
-            {
-                spriteRenderer.flipX = Input.GetAxisRaw("Horizontal") == -1;
-            }
+        if (Input.GetButton("Horizontal"))
+        {
+            spriteRenderer.flipX = Input.GetAxisRaw("Horizontal") == -1;
+        }
 
-           //transform.Translate(Time.deltaTime * MoveSpeed * inputDir);
+        //transform.Translate(Time.deltaTime * MoveSpeed * inputDir);
 
-            if (Input.GetButtonDown("Jump") && jumpCount < 2)
-            {
-                rigid.AddForce(Vector2.up * JumpPower * 2, ForceMode2D.Impulse);
-                jumpCount++;
-                anim.SetBool("Jump", true);
-            }
+        if (Input.GetButtonDown("Jump") && jumpCount < 2)
+        {
+            rigid.AddForce(Vector2.up * JumpPower * 2, ForceMode2D.Impulse);
+            jumpCount++;
+            anim.SetBool("Jump", true);
+        }
 
-            if (currentExp >= maxExp)
-            {
-                LevelUp();
+        if (currentExp >= maxExp)
+        {
+            LevelUp();
 
-            }
+        }
     }
 
     /// <summary>
@@ -300,7 +314,7 @@ public class Player : StateBase
 
     public void OnInvincibleMode()
     {   //무적 처리 코드
-        
+
         gameObject.layer = 9;
         spriteRenderer.color = new Color(1, 1, 1, 0.1f);
         Invoke("OffDamaged", 1);
@@ -323,7 +337,7 @@ public class Player : StateBase
         {
             currentHp = value;
             onHPChange?.Invoke(currentHp);
-            Debug.Log($"현재 HP:{HP}");
+            //Debug.Log($"현재 HP:{HP}");
             if (HP < 0)
             {
                 PlayerDie();
@@ -344,7 +358,7 @@ public class Player : StateBase
         {
             currentExp = value;
             onEXPChange?.Invoke(currentExp);
-            Debug.Log($"Current Exp:{currentExp}");
+            //Debug.Log($"Current Exp:{currentExp}");
         }
     }
     int getExp;                                 //얻은 경험치

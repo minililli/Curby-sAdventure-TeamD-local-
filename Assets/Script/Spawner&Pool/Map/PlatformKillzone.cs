@@ -4,29 +4,23 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 using UnityEngine;
-using UnityEngine.Device;
 using UnityEngine.SceneManagement;
 
 public class PlatformKillzone : MonoBehaviour
 {
     public int platformCountEnd = 10;
-    int platformCount;
-    public Action<int> onPlatformCountChanged;
+    int platformCount=0;
+
+    public Action<int> onPlatformChanged;
     public Action onStageEnd;
 
-    private void Start()
-    {
-        platformCount = 0;
-        
-    }
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.gameObject.CompareTag("Platform") && collision.GetComponent<LandBase>() != null)
         {
             collision.gameObject.SetActive(false);
             platformCount++;
-            //Debug.Log(platformCount);
-            onPlatformCountChanged?.Invoke(platformCount);
+            onPlatformChanged?.Invoke(platformCount);
 
         }
         else if (collision.GetComponent<Bullet>() || collision.GetComponent<CoinBase>())

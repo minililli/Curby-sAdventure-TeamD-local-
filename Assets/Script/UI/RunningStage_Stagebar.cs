@@ -22,7 +22,7 @@ public class RunningStage_Stagebar : MonoBehaviour
     private void OnEnable()
     {
         killzone = FindObjectOfType<PlatformKillzone>();
-        killzone.onPlatformCountChanged += SetValue;
+        killzone.onPlatformChanged += SetValue;
 
     }
 

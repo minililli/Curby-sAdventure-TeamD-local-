@@ -1,6 +1,5 @@
 using System;
 using System.Collections;
-
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
@@ -18,6 +17,7 @@ public class Player : StateBase
     Enemy_Batafire enemy_Batafire;
     Enemy_Boxboxer enemy_Boxboxer;
     Enemy_Boxy enemy_Boxy;
+    BossAttack bossAttack;
 
     Pause pause;
 
@@ -57,32 +57,21 @@ public class Player : StateBase
         anim = GetComponent<Animator>();
         playercollider = GetComponent<CapsuleCollider2D>();
         InitStat();
+        gameCounter = FindObjectOfType<UI_GameCounter>(); // gameCounter 찾기
         pause = FindObjectOfType<Pause>();
-        gameCounter = FindObjectOfType<UI_GameCounter>();
     }
-
 
     private void Start()
     {
         moveSpeed = MoveSpeed;
-        if (SceneManager.GetActiveScene().name == "TEST_ALL(Scrolling)" || SceneManager.GetActiveScene().name == "Test_joo_map")
-        {
-            gameCounter.StartRun = () =>
-        {
-            isStart = true;
-            if (isStart)
-            {
-                isStart = true;
-            }
-        };
-        }
+        gameCounter.StartRun = () => isStart = true;
     }
 
     private void OnEnable()
     {
         if (SceneManager.GetActiveScene().name == "TEST_ALL(Scrolling)" || SceneManager.GetActiveScene().name == "Test_joo_map")
-        //if(SceneManager.GetActiveScene().buildIndex == 3)
         {
+            inputActions.Player.Disable();
             RunningMapInputOnEnable();
         }
         else
@@ -91,32 +80,13 @@ public class Player : StateBase
             inputActions.Player.esc.performed += OnESC;
             inputActions.Player.Move.performed += OnMoveInput;
             inputActions.Player.Move.canceled += OnMoveInput;
-        }
-    }
-
-    void RunningMapInputOnEnable()
-    {
-        inputActions.PlayerRun.Enable();
-        inputActions.PlayerRun.Down.performed += OnDown;
-    }
-    void RunningMapInputOnDisable()
-    {
-        inputActions.PlayerRun.Down.performed -= OnDown;
-        inputActions.PlayerRun.Disable();
-    }
-
-    private void OnDown(InputAction.CallbackContext obj)
-    {
-        if (canFallDown)
-        {
-            StartCoroutine(Falling());
+            anim.SetInteger("IdleCount", 0);
         }
     }
 
     private void OnDisable()
     {
         if (SceneManager.GetActiveScene().name == "TEST_ALL(Scrolling)" || SceneManager.GetActiveScene().name == "Test_joo_map")
-        //if (SceneManager.GetActiveScene().buildIndex == 3)
         {
             RunningMapInputOnDisable();
         }
@@ -127,6 +97,19 @@ public class Player : StateBase
             inputActions.Player.esc.performed -= OnESC;
             inputActions.Player.Disable();
         }
+    }
+    void RunningMapInputOnEnable()
+    {   if (isStart)
+        {
+            inputActions.Player.Enable();
+            inputActions.PlayerRun.Enable();
+            inputActions.PlayerRun.Down.performed += OnDown;
+        }
+    }
+    void RunningMapInputOnDisable()
+    {
+        inputActions.PlayerRun.Down.performed -= OnDown;
+        inputActions.PlayerRun.Disable();
     }
 
     private void OnMoveInput(InputAction.CallbackContext context)
@@ -142,6 +125,13 @@ public class Player : StateBase
         if (playerH < 0)
         {
             isLeft = true;
+        }
+    }
+    private void OnDown(InputAction.CallbackContext obj)
+    {
+        if (canFallDown)
+        {
+            StartCoroutine(Falling());
         }
     }
 
@@ -175,9 +165,7 @@ public class Player : StateBase
                 anim.SetBool("Jump", false);
             }
         }
-
         // ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
-
         if (canFallDown && dirY < 0) // 아래로 내려가기
         {
             OnFallDown();
@@ -190,7 +178,7 @@ public class Player : StateBase
     private void OnFallDown()
     {
         anim.SetBool("Jump", false);
-        //anim.SetBool("Walking", false);
+        anim.SetBool("Walking", false);
         StartCoroutine(Falling());
     }
 
@@ -202,11 +190,10 @@ public class Player : StateBase
     {
         playercollider.enabled = false;
         Debug.Log("collider.enabled = false");
-        yield return new WaitForSeconds(0.2f);
+        yield return new WaitForSeconds(0.3f);
         playercollider.enabled = true;
         canFallDown = false;
     }
-
     //ㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡㅡ
 
     private void OnCollisionEnter2D(Collision2D collision)
@@ -227,7 +214,7 @@ public class Player : StateBase
                 canFallDown = false;
                 //Debug.Log("canFallDown(false)");
             }
-
+            canFallDown = false;
             jumpCount = 0;
         }
     }
@@ -247,41 +234,60 @@ public class Player : StateBase
             if (collision.transform.parent.CompareTag("Enemy_BoxBoxer"))              // 적이 무엇인지 태그로 확인하여 해당 스크립트의 공격력을 enemyattack에 대입 
             {
                 enemy_Boxboxer = collision.transform.GetComponentInParent<Enemy_Boxboxer>();
-                //enemyattack = enemy_Boxboxer.AttackPoint;
+                enemyattack = enemy_Boxboxer.AttackPoint;
             }
             if (collision.transform.parent.CompareTag("Enemy_Batafire"))              // 적이 무엇인지 태그로 확인하여 해당 스크립트의 공격력을 enemyattack에 대입 
             {
                 enemy_Batafire = collision.transform.GetComponentInParent<Enemy_Batafire>();
-                //enemyattack = enemy_Batafire.AttackPoint;
+                enemyattack = enemy_Batafire.AttackPoint;
             }
             if (collision.transform.parent.CompareTag("Enemy_Boxy"))              // 적이 무엇인지 태그로 확인하여 해당 스크립트의 공격력을 enemyattack에 대입 
             {
                 enemy_Boxy = collision.transform.GetComponentInParent<Enemy_Boxy>();
-                //enemyattack = enemy_Boxy.AttackPoint;
+                //enemyattack = enemy_Boxy.AttackPoint; --------------------------------------------------- 오류/주석처리함
+                enemyattack = enemy_Boxy.attackPoint;
             }
-            OnDamage(enemyattack);                                              // 대미지 처리 함수 
+            if (collision.transform.parent.CompareTag("BossAttack"))
+            {
+                bossAttack = collision.transform.GetComponentInParent<BossAttack>();
+                //enemyattack = bossAttack.AttackPoint; --------------------------------------------------- 오류/주석처리함
+                enemyattack = bossAttack.attackPoint;
+                Debug.Log("b");
+            }
+            OnDamage(enemyattack);                                              // 대미지 처리 함수            
         }
     }
 
     private void Update()
     {
-        if (SceneManager.GetActiveScene().name != "TEST_ALL(Scrolling)" || SceneManager.GetActiveScene().name != "Test_joo_map")
+        if (isStart)
         {
-            if (Mathf.Abs(rigid.velocity.x) < 0.3)  // 애니메이션 
-            {
-                anim.SetBool("Walking", false);
-            }
-            else
-            {
-                anim.SetBool("Walking", true);
-            }
+            anim.SetInteger("IdleCount", 1);
         }
+        if (SceneManager.GetActiveScene().name == "TEST_ALL(Scrolling)" || SceneManager.GetActiveScene().name == "Test_joo_map")
+        {
+            anim.SetInteger("IdleCount", 1);
+        }
+        else
+        {
+            anim.SetInteger("IdleCount", 0);
+        }
+
+        if (Mathf.Abs(rigid.velocity.x) < 0.3)  // 애니메이션 
+        {
+            anim.SetBool("Walking", false);
+        }
+        else
+        {
+            anim.SetBool("Walking", true);
+        }
+
         if (Input.GetButton("Horizontal"))
         {
             spriteRenderer.flipX = Input.GetAxisRaw("Horizontal") == -1;
         }
 
-        //transform.Translate(Time.deltaTime * MoveSpeed * inputDir);
+        transform.Translate(Time.deltaTime * MoveSpeed * inputDir);
 
         if (Input.GetButtonDown("Jump") && jumpCount < 2)
         {
@@ -293,7 +299,6 @@ public class Player : StateBase
         if (currentExp >= maxExp)
         {
             LevelUp();
-
         }
     }
 
@@ -323,12 +328,19 @@ public class Player : StateBase
     void OffDamaged()
     {
         gameObject.layer = 7;
-        gameObject.tag = "Player";
         spriteRenderer.color = new Color(1, 1, 1, 10);
     }
 
-    protected int Level;
+    ///초기스탯
+    protected override void InitStat()
+    {
+        base.InitStat();
+        EXP = 0;
+        maxExp = 20;
+        HP = maxHp;
+    }
 
+    public Action<float> onHPChange;
     protected float currentHp;                            //Hp 관련 (+ 프로퍼티)
     public float HP
     {
@@ -336,19 +348,26 @@ public class Player : StateBase
         set
         {
             currentHp = value;
-            onHPChange?.Invoke(currentHp);
             //Debug.Log($"현재 HP:{HP}");
             if (HP < 0)
             {
+                isPlayerDead = true;
                 PlayerDie();
             }
             else if (HP > maxHp)
             {
                 currentHp = maxHp;
             }
+            onHPChange?.Invoke(currentHp);
         }
     }
 
+    public void AddHP(float plus)
+    {
+        HP += plus;
+    }
+
+    public Action<int> onEXPChange;
     protected int maxExp;                         //Exp 경험치 + (프로퍼티)
     protected int currentExp;
     public int EXP
@@ -357,77 +376,74 @@ public class Player : StateBase
         set
         {
             currentExp = value;
+
             onEXPChange?.Invoke(currentExp);
-            //Debug.Log($"Current Exp:{currentExp}");
         }
-    }
-    int getExp;                                 //얻은 경험치
-
-    //-----------------------------------------------------------------------------------------------------------
-    // ----------- delegate-----------
-    Action<float> onHPChange;
-    // ---------------------------------
-
-
-    ///초기스탯
-    protected override void InitStat()
-    {
-        base.InitStat();
-        EXP = 0;
-        maxExp = 10;
-        HP = maxHp = 100.0f;
-    }
-
-    public void AddHP(float plus)
-    {
-        HP += plus;
     }
 
     public void AddExp(int plus)
     {
         EXP += plus;
     }
+
+    public Action<int> onScoreChange;
+    int score;
+    public int Score
+    {
+        get => score;
+        set
+        {
+            score = value;
+            onScoreChange?.Invoke(Score);
+        }
+    }
+
+    public void AddScore(int plus)
+    {
+        Score += plus;
+    }
+
     void LevelUp()                   // 레벨업
     {
         EXP -= maxExp;
-        Level += 1;                  //레벨업시 어떻게 변화할지는 의논필요
+        level += 1;                  //레벨업시 어떻게 변화할지는 의논필요
         maxHp *= 1.2f;
         HP = maxHp;
         maxExp *= 2;                //부드러운 경험치 bar를 위해 float으로 변경해야할지?        
         attackPoint *= 1.2f;
         defencePoint *= 1.2f;
         attackSpeed *= 1.2f;
+        //pause.OnLeveUp();
+    }
+    public Action<float> ondamage;
+    protected void OnDamage(float enemyattack)
+    {
+        float damage = enemyattack - (defencePoint * 0.3f);                 //데미지 = 적 공격력 - 방어점수의30%
+        if (damage > 0)
+        {
+            AddHP(-damage);
+        }
+        else
+        {
+            AddHP(-1);
+        }
+        OnDamageText();
+        ondamage?.Invoke(damage);
+        //Debug.Log($"Player HP : {HP} : {damage} = {enemyattack} - {defencePoint} * 0.3f ");        
     }
 
-    //--------------delegate-----------------
-    Action<int> onEXPChange;
-    //---------------------------------------
-    void GetEXP()
+    void OnDamageText()
     {
-        AddExp(getExp);
+        GameObject obj = Factory.Inst.GetObject(PoolObjectType.DamageText);
+        obj.transform.position = this.transform.position;
     }
 
     private void PlayerDie()
     {
         if (!isPlayerDead)
         {
-            EXP = EXP - 50;   // player 사망시 경험치 감소
+            AddExp(-50);
             pause.OnPause();
-        }
-    }
-
-    protected void OnDamage(float enemyattack)
-    {
-        if (HP > 0)
-        {
-            float damage = enemyattack - (defencePoint * 0.3f);                 //데미지 = 적 공격력 - 방어점수의30%                        
-            HP -= (damage > 0) ? damage : 1.0f;                          //데미지 최소값 확보
-            Debug.Log($"Player HP : {HP} : {damage} = {enemyattack} - {defencePoint} * 0.3f ");
-        }
-        else if (HP < 0)
-        {
-            isPlayerDead = true;
-            PlayerDie();
         }
     }
 }

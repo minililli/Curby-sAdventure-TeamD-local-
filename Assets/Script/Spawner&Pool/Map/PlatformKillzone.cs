@@ -10,6 +10,15 @@ public class PlatformKillzone : MonoBehaviour
 {
     public int platformCountEnd = 10;
     int platformCount=0;
+    public int PlatformCount
+    {
+        get => platformCount;
+        private set
+        {
+            platformCount = value;
+            onPlatformChanged?.Invoke(platformCount);
+        }
+    }
 
     public Action<int> onPlatformChanged;
     public Action onStageEnd;
@@ -19,8 +28,7 @@ public class PlatformKillzone : MonoBehaviour
         if (collision.gameObject.CompareTag("Platform") && collision.GetComponent<LandBase>() != null)
         {
             collision.gameObject.SetActive(false);
-            platformCount++;
-            onPlatformChanged?.Invoke(platformCount);
+             PlatformCount++;
 
         }
         else if (collision.GetComponent<Bullet>() || collision.GetComponent<CoinBase>())

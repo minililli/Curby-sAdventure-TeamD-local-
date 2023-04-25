@@ -12,8 +12,10 @@ public enum PoolObjectType
     CoinCopper,
     CoinSilver,
     CoinGold,
+    DamageText,
     ItemHeart
 }
+
 public class Factory : Singleton<Factory>
 {
 
@@ -23,6 +25,7 @@ public class Factory : Singleton<Factory>
     Coin1Pool coin1pool;
     Coin2Pool coin2pool;
     Coin3Pool coin3pool;
+    DamageTextPool damageTextPool;
     ItemHeartPool heartpool;
 
     protected override void PreInitialize()
@@ -33,6 +36,7 @@ public class Factory : Singleton<Factory>
         coin1pool= GetComponentInChildren<Coin1Pool>();
         coin2pool = GetComponentInChildren<Coin2Pool>();
         coin3pool = GetComponentInChildren<Coin3Pool>();
+        damageTextPool = GetComponentInChildren<DamageTextPool>();
         heartpool = GetComponentInChildren<ItemHeartPool>();
     }
 
@@ -45,6 +49,7 @@ public class Factory : Singleton<Factory>
         coin1pool?.Initialize();
         coin2pool?.Initialize();
         coin3pool?.Initialize();
+        damageTextPool?.Initialize();
         heartpool?.Initialize();
     }
 
@@ -73,6 +78,9 @@ public class Factory : Singleton<Factory>
             case PoolObjectType.CoinGold:
                 result = GetCoin3().gameObject;
                 break;
+            case PoolObjectType.DamageText:
+                result = GetdamageText().gameObject;
+                break;
             case PoolObjectType.ItemHeart:
                 result = GetHeart().gameObject;
                 break;
@@ -85,7 +93,7 @@ public class Factory : Singleton<Factory>
     public Coin1Copper GetCoin1() => coin1pool?.GetObject();
     public Coin2Silver GetCoin2() => coin2pool?.GetObject();
     public Coin3Gold GetCoin3() => coin3pool?.GetObject();
-
+    public DamageText GetdamageText() => damageTextPool?.GetObject();
     public ItemHeart GetHeart() => heartpool?.GetObject();
 
 }

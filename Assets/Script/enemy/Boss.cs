@@ -5,7 +5,7 @@ using TMPro;
 using Unity.Mathematics;
 using UnityEngine;
 using UnityEngine.UI;
-
+using UnityEngine.SceneManagement;
 using Random = UnityEngine.Random;
 
 public class Boss : PoolObject
@@ -27,7 +27,7 @@ public class Boss : PoolObject
     Transform tran_Target;
     //Rigidbody2D rigi_Target;
     //Collider2D coll_Target;
-    GameObject obj;                                                             //collision.gameObject 줄여쓰기 위해 ..
+    GameObject obj;   //collision.gameObject 줄여쓰기 위해 ..
 
     Vector2 dirVec;
     Vector2 nextVec;
@@ -36,9 +36,13 @@ public class Boss : PoolObject
     /// 보스죽을때 이펙트 프리팹
     /// </summary>
     public GameObject bossexplosionEffectPrefab;
-
+    public GameObject projectilePrefab;
     public GameObject monsterPrefab;  // 생성할 몬스터의 프리팹
     public float spawnDistance = 5.0f;  // 몬스터가 생성될 거리
+    public float SpawnInterval = 5.0f;
+
+
+    public string nextSceneName = "TEST_ALL(Scrolling)";
     /// <summary>
     /// 보스최대hp
     /// </summary>    
@@ -105,7 +109,7 @@ public class Boss : PoolObject
     /// </summary>
     public TMP_Text EnemyHpText;
 
-
+    Pause pause;
     /// <summary>
     /// 스텟 초기화용
     /// </summary>
@@ -151,7 +155,21 @@ public class Boss : PoolObject
         slider.maxValue = maxHealth;  // Slider의 maxValue를 maxHealth로 설정합니다.
         slider.value = maxHealth;  // Slider의 value를 maxHealth로 초기화합니다.
     }
-    
+    IEnumerator SpawnAttack()
+    {
+        while (true)
+        {
+            Vector3 spawnPosition = new Vector3(4f, -2f, 0f); // 보스 위치
+            Quaternion spawnRotation = Quaternion.identity; // 기본 회전값
+
+            // 보스 위치에서 왼쪽으로 이동하는 프로젝타일 생성
+            GameObject projectile = Instantiate(projectilePrefab, spawnPosition, spawnRotation);
+            Rigidbody2D projectileRigidbody = projectile.GetComponent<Rigidbody2D>();
+            projectileRigidbody.velocity = new Vector2(attackSpeed, 0f);
+
+            yield return new WaitForSeconds(SpawnInterval); // 프로젝타일 생성 주기
+        }
+    }
     protected virtual void FixedUpdate()
     {
 
@@ -168,6 +186,7 @@ public class Boss : PoolObject
             // 폭발 이펙트를 생성하는 코루틴 함수를 실행
             StartCoroutine(Explode());
             StopCoroutine(SpawnMonster());
+            StopCoroutine(SpawnAttack());
         }
     }
     private IEnumerator Explode()
@@ -295,8 +314,7 @@ public class Boss : PoolObject
     void Die_Enemy()
     {
         isLive = false;
-        
-        
+
         //gameObject.SetActive(false);                                            // Enemy 비활성화
 
         //player.AddExp((int)exp);                                              // player에 exp 추가

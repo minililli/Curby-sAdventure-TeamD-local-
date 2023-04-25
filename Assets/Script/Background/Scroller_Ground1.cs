@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -10,22 +11,39 @@ public class Scroller_Ground1 : MonoBehaviour
     float slot_Width = 21.70f;  // 그라운드 한변의 길이
 
     UI_GameCounter gameCounter;
+    PlatformKillzone killzone;
 
     bool isStart = false;
 
     protected virtual void Awake()
     {
         bgSlots = new Transform[transform.childCount];  // 슬롯이 들어갈 배열 생성
-        for (int i=0;i<transform.childCount;i++)        
+        for (int i = 0; i < transform.childCount; i++)
         {
             bgSlots[i] = transform.GetChild(i);         // 슬롯 하나씩 찾기
         }
         slot_Width = bgSlots[1].position.x - bgSlots[0].position.x;   // 이미지 한변의 길이 계산
     }
+
+    private void OnEnable()
+    {
+        killzone = FindObjectOfType<PlatformKillzone>();
+        gameCounter = FindObjectOfType<UI_GameCounter>();
+    }
     private void Start()
     {
-        gameCounter = FindObjectOfType<UI_GameCounter>();
+
         gameCounter.StartRun += OnStart;
+        killzone.onStageEnd += ClearObstacle;
+    }
+
+    private void ClearObstacle()
+    {
+        for (int i = 0; i < transform.childCount; i++)
+        {
+            bgSlots[i].transform.GetChild(i).GetChild(0).gameObject.SetActive(false);
+            bgSlots[i].transform.GetChild(i).GetChild(0).gameObject.SetActive(false);
+        }
     }
 
     void OnStart()
@@ -33,10 +51,9 @@ public class Scroller_Ground1 : MonoBehaviour
         isStart = true;
     }
 
-
     private void Update()
     {
-        if(isStart)
+        if (isStart)
         {
             for (int i = 0; i < bgSlots.Length; i++)  // 아래 foreach와 같은 코드. 하지만 foreach가 더 빠르다.
             {
@@ -54,7 +71,7 @@ public class Scroller_Ground1 : MonoBehaviour
     protected virtual void MoveRightEnd(int index)
     {
         bgSlots[index].Translate(slot_Width * bgSlots.Length * transform.right);
-       for(int i =0; i< transform.childCount; i++)
+        for (int i = 0; i < transform.childCount; i++)
         {
             bgSlots[i].transform.GetChild(i).gameObject.SetActive(true);
             bgSlots[i].transform.GetChild(i).GetChild(0).gameObject.SetActive(false);

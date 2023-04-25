@@ -22,7 +22,7 @@ public class MapItem_Box : MapItem_Base
     }
     private void OnTriggerEnter2D(Collider2D collision)
     {
-    
+
         if (collision.gameObject.CompareTag("Skill2"))
         {
             RandomItemSpawn();
@@ -34,14 +34,14 @@ public class MapItem_Box : MapItem_Base
 
     private void RandomItemSpawn()
     {
-        r=Random.value;
-        if (r < starspawnRatio)
+        r = Random.value;
+        if (r < heartspawnRatio)
         {
             GameObject obj = Factory.Inst.GetObject(PoolObjectType.ItemStar);
             ItemStar item = obj.GetComponent<ItemStar>();
             item.transform.position = transform.position + Vector3.up * r;
         }
-        else if(r < heartspawnRatio)
+        else if (r < starspawnRatio)
         {
             GameObject obj = Factory.Inst.GetObject(PoolObjectType.ItemHeart);
             ItemHeart item = obj.GetComponent<ItemHeart>();

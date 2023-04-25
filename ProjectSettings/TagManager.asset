@@ -19,7 +19,7 @@ TagManager:
   - Default
   - TransparentFX
   - Ignore Raycast
-  - 
+  - Camera
   - Water
   - UI
   - Enemy
@@ -34,7 +34,7 @@ TagManager:
   - 
   - 
   - 
-  - Camera
+  - 
   - 
   - 
   - 

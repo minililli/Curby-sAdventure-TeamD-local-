@@ -333,12 +333,12 @@
         },
         {
             "name": "PlayerRun",
-            "id": "ff4d30ec-b5a1-49e7-a148-ac11e07005f4",
+            "id": "14045c06-8d85-46a8-99ce-d90fc73d027c",
             "actions": [
                 {
                     "name": "Down",
                     "type": "Button",
-                    "id": "11bd6ba0-2f0c-4659-a253-bdc91e061236",
+                    "id": "4adb1958-7c9a-4289-bd11-6f2a379a1eb9",
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "",
@@ -348,11 +348,11 @@
             "bindings": [
                 {
                     "name": "",
-                    "id": "84ba035b-d054-4ae1-bcf8-100978bd1d42",
+                    "id": "09b2d975-3c98-463d-925f-aa1993aac37e",
                     "path": "<Keyboard>/downArrow",
                     "interactions": "",
                     "processors": "",
-                    "groups": "KeyBoard",
+                    "groups": "",
                     "action": "Down",
                     "isComposite": false,
                     "isPartOfComposite": false

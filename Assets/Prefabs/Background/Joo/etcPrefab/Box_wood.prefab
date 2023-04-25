@@ -125,5 +125,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   exp: 5
-  starspawnRatio: 0.6
-  heartspawnRatio: 0.4
+  itemspawnRatio: 0.4

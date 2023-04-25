@@ -239,7 +239,6 @@ GameObject:
   - component: {fileID: 8557241778613871369}
   - component: {fileID: 8557241778613871366}
   - component: {fileID: 8557241778613871367}
-  - component: {fileID: 8557241778613871368}
   m_Layer: 5
   m_Name: GameStartCount
   m_TagString: Untagged
@@ -308,18 +307,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!225 &8557241778613871368
-CanvasGroup:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8557241778613871370}
-  m_Enabled: 1
-  m_Alpha: 1
-  m_Interactable: 1
-  m_BlocksRaycasts: 1
-  m_IgnoreParentGroups: 0
 --- !u!1 &8557241779258575608
 GameObject:
   m_ObjectHideFlags: 0
@@ -332,7 +319,7 @@ GameObject:
   - component: {fileID: 8557241779258575605}
   - component: {fileID: 8557241779258575606}
   - component: {fileID: 8557241779258575607}
-  - component: {fileID: 8557241779258575602}
+  - component: {fileID: 2064814067474294355}
   - component: {fileID: 8557241779258575603}
   m_Layer: 5
   m_Name: Canvas_GameCounter
@@ -423,7 +410,7 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
---- !u!114 &8557241779258575602
+--- !u!114 &2064814067474294355
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -432,7 +419,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 8557241779258575608}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 57e6f8e4c47bbea47af5f424e11fbcf0, type: 3}
+  m_Script: {fileID: 11500000, guid: 1a090ee9071079849ad9939f5ecb48cb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!225 &8557241779258575603

@@ -28,7 +28,7 @@ public class RunningStage_Stagebar : MonoBehaviour
 
     void SetValue(int platform)
     {
-        float ratio  = (float)platform / (float)killzone.platformCountEnd;
+        float ratio  = (float)(platform) / (float)(killzone.platformCountEnd);
         slider.value = ratio;
     }
 

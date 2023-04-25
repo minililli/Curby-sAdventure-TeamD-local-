@@ -5,17 +5,18 @@ using UnityEngine;
 public class Scroller_Background1 : MonoBehaviour
 {
     bool isStart = false;
-    UI_GameCounter gameCounter;    
+    UI_GameCounter gameCounter;
 
     public float scrollingSpeed = 2.5f;  // 스크롤 이동 속도
     Transform[] bgSlots = null;  // 배경 이미지가 두개 붙어있는 슬롯의 집합
     float slot_Width = 19.68f;  // 이미지 한변의 길이
 
     protected virtual void Awake()
-    {   
+    {
 
+        gameCounter = FindObjectOfType<UI_GameCounter>();
         bgSlots = new Transform[transform.childCount];  // 슬롯이 들어갈 배열 생성
-        for (int i=0;i<transform.childCount;i++)        
+        for (int i = 0; i < transform.childCount; i++)
         {
             bgSlots[i] = transform.GetChild(i);         // 슬롯 하나씩 찾기
         }
@@ -24,13 +25,12 @@ public class Scroller_Background1 : MonoBehaviour
 
     private void Start()
     {
-        gameCounter = FindObjectOfType<UI_GameCounter>();
         gameCounter.StartRun += OnStart;
     }
 
     void OnStart()
     {
-       isStart = true;
+        isStart = true;
     }
 
 
@@ -49,7 +49,7 @@ public class Scroller_Background1 : MonoBehaviour
                 }
             }
         }
-       
+
     }
 
     protected virtual void MoveRightEnd(int index)

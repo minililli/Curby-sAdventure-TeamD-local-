@@ -26,12 +26,11 @@ public class Player : StateBase
     public Vector2 inputVec;
     protected bool isLeft = false;            //마지막 키 입력 방향 확인용
 
-    // -------------------------------------연주 수정
     bool isStart = false;           //3,2,1 완료여부 :  true면 게임시작, false면 카운트중임
     bool canFallDown = false;
     float dirY;
     CapsuleCollider2D playercollider;
-    //-----------------------------------------
+
 
     float playerH;                          //키 입력 방향 우측:1, 좌측 :-1
     [Header("스킬관련-------------------------------------")]
@@ -104,6 +103,8 @@ public class Player : StateBase
     void RunningMapInputOnEnable()
     {   if (isStart)
         {
+            
+            inputActions.UI.Enable();
             inputActions.Player.Enable();
             inputActions.PlayerRun.Enable();
             inputActions.PlayerRun.Down.performed += OnDown;
@@ -113,6 +114,8 @@ public class Player : StateBase
     {
         inputActions.PlayerRun.Down.performed -= OnDown;
         inputActions.PlayerRun.Disable();
+        inputActions.Player.Disable();
+        inputActions.UI.Disable();
     }
 
     private void OnMoveInput(InputAction.CallbackContext context)

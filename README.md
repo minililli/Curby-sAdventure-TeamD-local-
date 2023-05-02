@@ -4,11 +4,13 @@ Localwork(for backup)
 ## 팀프로젝트 개요(소개)
 - 진행방식 : 팀프로젝트(4인)
 - 진행기간 : 2023.03.06~ 2023.5.4(약 2개월)
+- 팀 URL : https://github.com/les1068/Atents-TeamD.git
 - 맡은임무 : RunningStage, 비동기 LoadingScene, 게임오브젝트 생성/소환 관련 Pool, Factory 등 내부적처리 등
 
 ## 게임 소개
 2D 러닝 액션 플랫폼게임입니다.
 MainScene -> RunningStage -> BattleStage -> BossStage -> endingCredit 순으로 진행됩니다.
+
 진행하다 죽으면 해당 씬 재시작, 또는 게임 종료를 할 수 있습니다.
 
 ## 어려웠던 점과 극복했던 방법

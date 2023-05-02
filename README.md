@@ -5,6 +5,7 @@ Localwork(for backup)
 - 진행방식 : 팀프로젝트(4인)
 - 진행기간 : 2023.03.06~ 2023.5.4(약 2개월)
 - 팀 URL : https://github.com/les1068/Atents-TeamD.git
+- 사용게임 엔진 : Unity (2021.3.10f1)
 - 맡은임무 : RunningStage, 비동기 LoadingScene, 게임오브젝트 생성/소환 관련 Pool, Factory 등 내부적처리 등
 
 ## 게임 소개

@@ -4,21 +4,21 @@ using UnityEngine;
 
 public class CoinBase : ItemBase
 {
-    protected int coinscore;
-    protected int coinexp;
+    protected int coinScore;
+    protected int coinExp;
 
     protected override void OnEnable()
     {
-        ItemScore = coinscore;
-        ItemExp = coinexp;
+        ItemScore = coinScore;
+        ItemExp = coinExp;
     }
 
     protected override void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.CompareTag("Player"))
         {
-            player.AddExp(coinexp);
-            player.AddScore(coinscore);
+            player.AddExp(coinExp);
+            player.AddScore(coinScore);
             ItemEffect();
             //StartCoroutine(LifeOver());
         }

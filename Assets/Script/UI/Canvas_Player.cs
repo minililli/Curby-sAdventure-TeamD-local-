@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.SocialPlatforms.Impl;
 
 public class Canvas_Player : MonoBehaviour
 {
@@ -14,17 +15,18 @@ public class Canvas_Player : MonoBehaviour
     TextMeshProUGUI text_Skill3;
     TextMeshProUGUI text_Score;
     TextMeshProUGUI text_Exp;
+    Slider sliderHP;
 
     Player player;
     Skill1 skill1;
     Skill2 skill2;
     Skill3 skill3;
 
-    float currentScore;
-    int targetScore;
+    float currentScore = 0.0f;
+    int targetScore = 0;
 
-    float currentExp;
-    int targetExp;
+    float currentExp = 0.0f;
+    int targetExp = 0;
 
     private void Awake()
     {
@@ -39,11 +41,13 @@ public class Canvas_Player : MonoBehaviour
         text_Skill2 = tran_Skill2.GetComponentInChildren<TextMeshProUGUI>();
         text_Skill3 = tran_Skill3.GetComponentInChildren<TextMeshProUGUI>();
 
-        Transform tran_Text = transform.GetChild(5);
-        Transform tran_Score = tran_Text.GetChild(0);
-        Transform tran_Exp = tran_Text.GetChild(1);
+        sliderHP = transform.GetChild(4).GetChild(1).GetComponent<Slider>();
 
+        Transform tran_Text = transform.GetChild(5);
+        
+        Transform tran_Score = tran_Text.GetChild(0);
         text_Score = tran_Score.GetComponent<TextMeshProUGUI>();
+        Transform tran_Exp = tran_Text.GetChild(1);
         text_Exp = tran_Exp.GetComponent<TextMeshProUGUI>();
     }
 
@@ -73,13 +77,20 @@ public class Canvas_Player : MonoBehaviour
         player = FindObjectOfType<Player>();
 
         player.onScoreChange += Refresh_Score;
-        player.onEXPChange += Refresh_Exp;        
+        player.onEXPChange += Refresh_Exp;
+
+        text_Score.text = currentScore.ToString();
+        text_Exp.text = currentExp.ToString();
+        sliderHP.minValue = 0f;
+        sliderHP.maxValue = player.maxHp;
+        sliderHP.value = player.maxHp;
     }
 
     private void Update()
     {
         text_Score.text = $"{targetScore}";
         text_Exp.text = $"{targetExp}";
+        sliderHP.value = player.HP;
     }
 
     void Refresh_Score(int newScore)

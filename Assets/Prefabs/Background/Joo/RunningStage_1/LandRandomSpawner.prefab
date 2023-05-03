@@ -44,7 +44,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6609907301d7b4d4caa9a37d972f4676, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  objType: 0
+  objType: 4
   interval: 4
   minY: -1
   maxY: 2
+  minusCount: 7
+  originalPrefab: {fileID: 4716310732309764317, guid: d27f384cd95cf884681940468d98c3e0, type: 3}

@@ -12,9 +12,9 @@ GameObject:
   - component: {fileID: 8383009849895321059}
   - component: {fileID: 1314408471}
   - component: {fileID: 4596342432325851448}
-  m_Layer: 0
+  m_Layer: 12
   m_Name: Sign_Exit
-  m_TagString: Untagged
+  m_TagString: Item
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

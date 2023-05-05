@@ -16,7 +16,7 @@ public class PlatformKillzone : MonoBehaviour
     {
         get => platformCount;
         private set
-        {
+        { 
             platformCount = value;
             onPlatformChanged?.Invoke(platformCount);
         }
@@ -24,8 +24,7 @@ public class PlatformKillzone : MonoBehaviour
 
     public Action<int> onPlatformChanged;
     public Action onStageEnd;
-
-    private void Start()
+    private void Awake()
     {
         pause = FindObjectOfType<Pause>();
     }
@@ -36,7 +35,11 @@ public class PlatformKillzone : MonoBehaviour
         {
             collision.gameObject.SetActive(false);
              PlatformCount++;
-
+            //게임 종료 조건 
+            if (PlatformCount == platformCountEnd)
+            {
+                OnStageEnd();
+            }
         }
         else if (collision.GetComponent<Bullet>() || collision.GetComponent<CoinBase>())
         {
@@ -44,19 +47,15 @@ public class PlatformKillzone : MonoBehaviour
         }
 
 
-       //게임 종료 조건 
-        if (platformCount == platformCountEnd)
-        {
-            OnStageEnd();
-        }
+      
     }
     public void OnStageEnd()
     {
-        StopAllCoroutines();
-        //Debug.Log("Stage End");
+        //StopAllCoroutines();
+        Debug.Log("Stage End");
         //EditorApplication.isPaused = true;          //플레이 일시정지됨
         //onStageEnd?.Invoke();                       //끝났다고 알리는 델리게이트
         pause.Stage1End();        
-    }
+     }
   
 }
